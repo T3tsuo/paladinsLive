@@ -22,10 +22,10 @@ Hi-Rez allows us users to access their database by giving us a Developer ID's an
 In the API Document it states:
 "Here are the default initial limitations for API Developers:
 
-concurrent_sessions:  50 &nbsp
-sessions_per_day: 500 &nbsp
-session_time_limit:  15 minutes &nbsp
-request_day_limit:  7500" &nbsp
+concurrent_sessions:  50  
+sessions_per_day: 500  
+session_time_limit:  15 minutes  
+request_day_limit:  7500"  
 
 Therefore if you use the app a lot, it is a good idea to get a personal dev_id and auth_key instead of using the one built in the app because if more people use it then the default Developer ID and Authentiaction Key will not work consistently throughout the day.
 

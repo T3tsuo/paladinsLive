@@ -17,7 +17,7 @@ a new match or if there might be a bot in the match.
 There is a stat in the live match called "df" which stands for "dominance factor". This is a value calculated by paladins by summing up this equation of every match: 2xkills - 3xdeaths + assists. If a players dominance factor is low or in the negatives it means they usually have a bad kda and do not perform well. If it is high, usually they are good.
 
 ## Developer ID and Authentication Key:
-Hi-Rez allows us users to access their database by giving us Developer ID's and Authentication Keys, but with that we have limited requests we can make before we can no longer use the database for a certain time period.
+Hi-Rez allows us users to access their database by giving us a Developer ID's and a Authentication Keys, but with that we have limited requests we can make before we can no longer use the database for a certain time period.
 
 In the API Document it states:
 "Here are the default initial limitations for API Developers:
@@ -27,7 +27,7 @@ sessions_per_day: 500
 session_time_limit:  15 minutes
 request_day_limit:  7500"
 
-Therefore if you use the app a lot, it is a good idea to get a personal dev_id and auth_key instead of using the one built in the app because if more people use it then the default Developer ID and Authentiaction Key will stop working sooner.
+Therefore if you use the app a lot, it is a good idea to get a personal dev_id and auth_key instead of using the one built in the app because if more people use it then the default Developer ID and Authentiaction Key will not work consistently throughout the day.
 
 To get your own personal Dev ID and Auth Key, you can submit a request using this link:
 https://fs12.formsite.com/HiRez/form48/secure_index.html

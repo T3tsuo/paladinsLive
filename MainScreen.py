@@ -17,8 +17,8 @@ from datetime import datetime, date
 from PyQt5 import QtCore, QtGui, QtWidgets
 import traceback
 
-dev_id = 3674  # Developer ID
-auth_key = "899EFD3AD94540F78D5231A368B45E6D"  # Auth Key
+dev_id = 0  # Developer ID
+auth_key = ""  # Auth Key
 
 name = ""
 status = ""

@@ -17,7 +17,7 @@ a new match or if there might be a bot in the match.
 There is a stat in the live match called "df" which stands for "dominance factor". This is a value calculated by paladins by summing up this equation of every match: 2xkills - 3xdeaths + assists. If a players dominance factor is low or in the negatives it means they usually have a bad kda and do not perform well. If it is high, usually they are good.
 
 ## Developer ID and Authentication Key:
-Paladins allows us users to access their database by giving us Developer ID's and Authentication Keys, but with that we have limited requests we can make before we can no longer use the database for a certain time period.
+Hi-Rez allows us users to access their database by giving us Developer ID's and Authentication Keys, but with that we have limited requests we can make before we can no longer use the database for a certain time period.
 
 In the API Document it states:
 "Here are the default initial limitations for API Developers:

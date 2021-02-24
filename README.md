@@ -4,7 +4,7 @@
 Application to view Live Paladins Match Statistics on both teams.
 
 ## How to use:
-Type in a player;s username and make sure to hit enter for the program to check if the name is valid. Then press the
+Type in a player's username and make sure to hit enter for the program to check if the name is valid. Then press the
 "continue" button. For now, the friends list feature is not functioning but if the player is currently in a match then hit the "Live
 Match" button for the program to attempt to view both teams player stats of the current match.
 

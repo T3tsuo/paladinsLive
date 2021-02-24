@@ -36,3 +36,6 @@ To get your own personal Dev ID and Auth Key, you can submit a request using thi
 https://fs12.formsite.com/HiRez/form48/secure_index.html
 
 If you enter incorrect dev_id and auth_key then every player name will be invalid and the app won't be able to access Paladins Database. If you want to reset to the apps default dev_id and auth_key, you will need to go to the app files and delete a file called "dev_auth.dat".
+
+If the default id and auth key is not working and your personal one isn't working as well, then there could be maintenance on Hi-Rez's end.
+http://status.hirezstudios.com/

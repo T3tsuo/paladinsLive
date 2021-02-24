@@ -19,7 +19,7 @@ There is a stat in the live match called "df" which stands for "dominance factor
 ## Developer ID and Authentication Key:
 Hi-Rez allows us users to access their database by giving us a Developer ID's and a Authentication Keys, but with that we have limited requests we can make before we can no longer use the database for a certain time period.
 
-In the API Document it states:  
+In the API Document (https://docs.google.com/document/d/1OFS-3ocSx-1Rvg4afAnEHlT3917MAK_6eJTR6rzr-BM/edit#) it states:  
   
 "Here are the default initial limitations for API Developers:
 

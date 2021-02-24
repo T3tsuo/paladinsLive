@@ -8,6 +8,22 @@ Type in a player's username and make sure to hit enter for the program to check 
 "Continue" button. For now, the friends list feature is not functioning but if the player is currently in a match then hit the "Live
 Match" button for the program to attempt to view both teams player stats of the current match.
 
+### Developer ID and Authentication Key:
+Paladins allows us users to access their database by giving us Developer ID's and Authentication Keys, but with that we have limited requests we can make before we can no longer use the database for a certain time period.
+
+In the API Document it states:
+"Here are the default initial limitations for API Developers:
+
+concurrent_sessions:  50
+sessions_per_day: 500
+session_time_limit:  15 minutes
+request_day_limit:  7500"
+
+Therefore if you use the app a lot, it is a good idea to get a personal dev_id and auth_key instead of using the one built in the app because if more people use it then the default Developer ID and Authentiaction Key will stop working sooner.
+
+To get your own personal Dev ID and Auth Key, you can submit a request using this link:
+https://fs12.formsite.com/HiRez/form48/secure_index.html
+
 ### Shortcuts:
 Right now there are two keyboard shortcuts that can be used to make the navigation of the program more friendly. There is the "Esc" button that will go back instead
 of manually hitting the back button. As well as the "R" button that will refresh the Live Match statistics. This is useful if the player is in

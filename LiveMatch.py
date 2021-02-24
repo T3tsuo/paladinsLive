@@ -9,7 +9,7 @@
 
 import asyncio
 import arez
-import urllib.request
+from urllib.request import Request, urlopen
 import os
 import traceback
 
@@ -544,7 +544,8 @@ class Ui_LiveMatchWindow(object):
             if championsurl1[i] != "BOT":
                 try:
                     image = QtGui.QImage()
-                    image.loadFromData(urllib.request.urlopen(championsurl1[i]).read())
+                    request = Request(championsurl1[i], headers={"User-Agent": "Mozilla/5.0"})
+                    image.loadFromData(urlopen(request).read())
                     self.champ = QtWidgets.QLabel(self.centralwidget)
                     self.champ.setGeometry(QtCore.QRect(40, 110 * i + 120, 70, 70))
                     self.champ.setPixmap(QtGui.QPixmap(image))
@@ -568,7 +569,8 @@ class Ui_LiveMatchWindow(object):
             if championsurl2[i] != "BOT":
                 try:
                     image = QtGui.QImage()
-                    image.loadFromData(urllib.request.urlopen(championsurl2[i]).read())
+                    request = Request(championsurl2[i], headers={"User-Agent": "Mozilla/5.0"})
+                    image.loadFromData(urlopen(request).read())
                     self.champ = QtWidgets.QLabel(self.centralwidget)
                     self.champ.setGeometry(QtCore.QRect(680, 110 * i + 120, 70, 70))
                     self.champ.setPixmap(QtGui.QPixmap(image))

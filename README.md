@@ -30,5 +30,7 @@ request_day_limit:  7500"
 
 Therefore if you use the app a lot, it is a good idea to get a personal dev_id and auth_key instead of using the one built in the app because if more people use it then the default Developer ID and Authentiaction Key will not work consistently throughout the day.
 
+The app will automatically save your Dev ID and your Auth Key as default, so you only need to enter it once.
+
 To get your own personal Dev ID and Auth Key, you can submit a request using this link:
 https://fs12.formsite.com/HiRez/form48/secure_index.html

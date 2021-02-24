@@ -18,11 +18,10 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import traceback
 import pickle
 
-if not os.path.isfile("Dev_Auth.dat"):
+if not os.path.isfile("dev_auth.dat"):
     dev_auth = [0, ""]  # Developer ID and Auth Key
-    pickle.dump(dev_auth, open("Dev_Auth.dat", "wb"))
 else:
-    dev_auth = pickle.load(open("Dev_Auth.dat", "rb"))
+    dev_auth = pickle.load(open("dev_auth.dat", "rb"))
 
 name = ""
 status = ""
@@ -143,26 +142,27 @@ class Ui_MainWindow(object):
         self.authkey.setGeometry(QtCore.QRect(400, 450, 200, 30))
         self.authkey.setObjectName("lineEdit")
         self.authkey.setPlaceholderText("authkey (optional)")
-        self.info = QtWidgets.QLabel(self.centralwidget)
-        self.info.setStyleSheet("color: #cccccc;")
-        font = QtGui.QFont()
-        font.setFamily("Tw Cen MT Condensed Extra Bold")
-        font.setPointSize(16)
-        self.info.setFont(font)
-        self.info.setObjectName("info")
-        self.info.setText("To use personal Developer ID and Authentication Key")
-        self.info.adjustSize()
-        self.info.move((MainWindow.width() - self.info.width())//2, 400)
-        self.info1 = QtWidgets.QLabel(self.centralwidget)
-        self.info1.setStyleSheet("color: #cccccc;")
-        font = QtGui.QFont()
-        font.setFamily("Tw Cen MT Condensed Extra Bold")
-        font.setPointSize(14)
-        self.info1.setFont(font)
-        self.info1.setObjectName("info1")
-        self.info1.setText("Learn more on how to get them by visiting my GitHub page")
-        self.info1.adjustSize()
-        self.info1.move((MainWindow.width() - self.info1.width()) // 2, 500)
+        if not os.path.isfile("dev_auth.dat"):
+            self.info = QtWidgets.QLabel(self.centralwidget)
+            self.info.setStyleSheet("color: #cccccc;")
+            font = QtGui.QFont()
+            font.setFamily("Tw Cen MT Condensed Extra Bold")
+            font.setPointSize(16)
+            self.info.setFont(font)
+            self.info.setObjectName("info")
+            self.info.setText("To use personal Developer ID and Authentication Key")
+            self.info.adjustSize()
+            self.info.move((MainWindow.width() - self.info.width())//2, 400)
+            self.info1 = QtWidgets.QLabel(self.centralwidget)
+            self.info1.setStyleSheet("color: #cccccc;")
+            font = QtGui.QFont()
+            font.setFamily("Tw Cen MT Condensed Extra Bold")
+            font.setPointSize(14)
+            self.info1.setFont(font)
+            self.info1.setObjectName("info1")
+            self.info1.setText("Learn more on how to get them by visiting my GitHub page")
+            self.info1.adjustSize()
+            self.info1.move((MainWindow.width() - self.info1.width()) // 2, 500)
 
         self.proceed = QtWidgets.QPushButton(self.centralwidget)
         self.proceed.setStyleSheet("color: black; background-color: grey;")
@@ -210,7 +210,7 @@ class Ui_MainWindow(object):
             dev_auth[0] = self.devid.text()
             # replace default authKey
             dev_auth[1] = self.authkey.text()
-            pickle.dump(dev_auth, open("Dev_Auth.dat", "wb"))
+            pickle.dump(dev_auth, open("dev_auth.dat", "wb"))
             self.devid.setText("")
             self.authkey.setText("")
         # if name was inputted

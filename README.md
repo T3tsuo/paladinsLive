@@ -9,6 +9,6 @@ Type in a player username and make sure to hit enter for the program to check if
 Match" will make the program attempt to view both teams player stats of the current match.
 
 ### Shortcuts:
-Right now there are two shortcuts that can be used to use the program more efficiently. There is the "Esc" button that will go back instead
-of manually hitting the back button. As well as the "Refresh" button that will refresh the Live Match. This is useful if the player is in
+Right now there are two shortcuts that can be used to make the navigation of the program more friendly. There is the "Esc" button that will go back instead
+of manually hitting the back button. As well as the "R" button that will refresh the Live Match. This is useful if the player is in
 a new match or if there might be a bot in the match.

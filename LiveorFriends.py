@@ -11,8 +11,7 @@ import os
 from PyQt5 import QtCore, QtGui, QtWidgets
 import traceback
 
-dev_id = 0  # Developer ID
-auth_key = ""  # Auth Key
+dev_auth = [0, ""]  # Developer ID and Auth Key
 
 name = ""
 
@@ -20,13 +19,13 @@ name = ""
 class Ui_LiveMatchorFriendsWindow(object):
     # when window is created, get data from past window
     def __init__(self, x, y, z):
-        global name, dev_id, auth_key
+        global name, dev_auth
         # set the name
         name = x
         # current dev id
-        dev_id = y
+        dev_auth[0] = y
         # current auth key
-        auth_key = z
+        dev_auth[1] = z
 
     def setupUi(self, LiveMatchorFriendsWindow):
         LiveMatchorFriendsWindow.setObjectName("LiveMatchorFriendsWindow")
@@ -90,14 +89,14 @@ class Ui_LiveMatchorFriendsWindow(object):
         QtCore.QMetaObject.connectSlotsByName(LiveMatchorFriendsWindow)
 
     '''def openFriends_List(self):
-        global name, dev_id, auth_key, logfile
+        global name, dev_auth, logfile
         # grab Ui of FriendsList
         from FriendsList import Ui_FriendsList
         try:
             #create window
             self.window = QtWidgets.QMainWindow()
             # grabs ui of friendslist window
-            self.ui = Ui_FriendsList(name, dev_id, auth_key)
+            self.ui = Ui_FriendsList(name, dev_auth[0], dev_auth[1])
             # set up the ui of FriendsList
             self.ui.setupUi(self.window)
             # set up title
@@ -111,14 +110,14 @@ class Ui_LiveMatchorFriendsWindow(object):
             raise'''
 
     def openLive_Match(self):
-        global name, dev_id, auth_key, logfile
+        global name, dev_auth, logfile
         # grab Ui of LiveMatch
         from LiveMatch import Ui_LiveMatchWindow
         try:
             # create window
             self.window = QtWidgets.QMainWindow()
             # grabs ui of second window
-            self.ui = Ui_LiveMatchWindow(name, dev_id, auth_key)
+            self.ui = Ui_LiveMatchWindow(name, dev_auth[0], dev_auth[1])
             # sets up the second ui in the new window
             self.ui.setupUi(self.window)
             # set title
@@ -133,14 +132,14 @@ class Ui_LiveMatchorFriendsWindow(object):
 
 
     def backWindow(self):
-        global logfile, dev_id, auth_key
+        global logfile, dev_auth
         # grab Ui of MainScreen
         from MainScreen import Ui_MainWindow
         try:
             # create window
             self.window = QtWidgets.QMainWindow()
             # grabs ui of second window
-            self.ui = Ui_MainWindow(dev_id, auth_key)
+            self.ui = Ui_MainWindow(dev_auth[0], dev_auth[1])
             # sets up the second ui in the new window
             self.ui.setupUi(self.window)
             # set title

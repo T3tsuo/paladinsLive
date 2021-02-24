@@ -17,8 +17,7 @@ import os
 import traceback
 from datetime import datetime, date
 
-dev_id = 0  # Developer ID
-auth_key = ""  # Auth Key
+dev_auth = [0, ""]  # Developer ID and Auth Key
 
 name = ""
 friend_list = []
@@ -41,7 +40,7 @@ creation2 = []
 async def friends_list(n):
     global friend_list, offline, online, avatar_url1, names1, statuses1, rank1, login1, creation1, avatar_url2, names2
     global statuses2, rank2, login2, creation2
-    api = arez.PaladinsAPI(dev_id, auth_key)
+    api = arez.PaladinsAPI(dev_auth[0], dev_auth[1])
     p = await api.get_player(n)
     # get players friend list
     friend_list = await p.get_friends()
@@ -142,10 +141,10 @@ def month_string(x):
 
 class Ui_FriendsList(object):
     def __init__(self, x, y, z):
-        global name, dev_id, auth_key
+        global name, dev_auth
         name = x
-        dev_id = y
-        auth_key = z
+        dev_auth[0] = y
+        dev_auth[1] = z
 
     def setupUi(self, FriendsList):
         FriendsList.setObjectName("FriendsList")
@@ -295,14 +294,14 @@ class Ui_FriendsList(object):
                 self.avatar.adjustSize()
 
     def goback(self):
-        global name, dev_id, auth_key, logfile
+        global name, dev_auth, logfile
         # import ui of previous window
         from LiveorFriends import Ui_LiveMatchorFriendsWindow
         try:
             # create window
             self.window = QtWidgets.QMainWindow()
             # grabs ui of second window
-            self.ui = Ui_LiveMatchorFriendsWindow(name, dev_id, auth_key)
+            self.ui = Ui_LiveMatchorFriendsWindow(name, dev_auth[0], dev_auth[1])
             # sets up the second ui in the new window
             self.ui.setupUi(self.window)
             # set title

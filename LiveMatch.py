@@ -15,8 +15,7 @@ import traceback
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-dev_id = 0  # Developer ID
-auth_key = ""  # Auth Key
+dev_auth = [0, ""]  # Developer ID and Auth Key
 
 match_name = ""
 
@@ -47,7 +46,7 @@ names2 = []
 async def live_match(n):
     global status, map_name, queue_name, match_name
     # create an API instance
-    api = arez.PaladinsAPI(dev_id, auth_key)
+    api = arez.PaladinsAPI(dev_auth[0], dev_auth[1])
     # fetch Player stats
     player = await api.get_player(n)
     # gets player status, and reformat to only display status and not the IGN
@@ -195,13 +194,13 @@ async def get_champion(list, name):
 
 class Ui_LiveMatchWindow(object):
     def __init__(self, x, y, z):
-        global name, dev_id, auth_key
+        global name, dev_auth
         # set the name
         name = x
         # current dev Id
-        dev_id = y
+        dev_auth[0] = y
         # current auth key
-        auth_key = z
+        dev_auth[1] = z
 
     def setupUi(self, LiveMatchWindow):
         LiveMatchWindow.setObjectName("LiveMatchWindow")
@@ -593,7 +592,7 @@ class Ui_LiveMatchWindow(object):
                 self.rank.setScaledContents(True)
 
     def openRefresh(self):
-        global dev_id, auth_key, logfile
+        global dev_auth, logfile
         # reset all match data
         self.reset_data()
         # import refresh ui
@@ -602,7 +601,7 @@ class Ui_LiveMatchWindow(object):
             # create window
             self.window = QtWidgets.QMainWindow()
             # grabs ui of second window
-            self.ui = Ui_Refresh(name, dev_id, auth_key)
+            self.ui = Ui_Refresh(name, dev_auth[0], dev_auth[1])
             # sets up the second ui in the new window
             self.ui.setupUi(self.window)
             # set title
@@ -617,7 +616,7 @@ class Ui_LiveMatchWindow(object):
             raise
 
     def backWindow(self):
-        global dev_id, auth_key, logfile
+        global dev_auth, logfile
         # reset all match data
         self.reset_data()
         # import ui of previous window
@@ -626,7 +625,7 @@ class Ui_LiveMatchWindow(object):
             # create window
             self.window = QtWidgets.QMainWindow()
             # grabs ui of second window
-            self.ui = Ui_LiveMatchorFriendsWindow(name, dev_id, auth_key)
+            self.ui = Ui_LiveMatchorFriendsWindow(name, dev_auth[0], dev_auth[1])
             # sets up the second ui in the new window
             self.ui.setupUi(self.window)
             # set title

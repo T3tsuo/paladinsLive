@@ -16,9 +16,13 @@ from datetime import datetime, date
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 import traceback
+import pickle
 
-dev_id = 0  # Developer ID
-auth_key = ""  # Auth Key
+if not os.path.isfile("Dev_Auth.dat"):
+    dev_auth = [0, ""]  # Developer ID and Auth Key
+    pickle.dump(dev_auth, open("Dev_Auth.dat", "wb"))
+else:
+    dev_auth = pickle.load(open("Dev_Auth.dat", "rb"))
 
 name = ""
 status = ""
@@ -32,7 +36,7 @@ width = 0
 async def main(n):
     global name, avatar_url, status, rank, lastlogin1
     # create an API instance
-    api = arez.PaladinsAPI(dev_id, auth_key)
+    api = arez.PaladinsAPI(dev_auth[0], dev_auth[1])
     try:
         # fetch Player stats
         player = await api.get_player(n)
@@ -104,11 +108,11 @@ def grab_time(d, t, p):
 
 class Ui_MainWindow(object):
     def __init__(self, y, z):
-        global dev_id, auth_key
+        global dev_auth
         # set default devId
-        dev_id = y
+        dev_auth[0] = y
         # set default authKey
-        auth_key = z
+        dev_auth[1] = z
 
     def setupUi(self, MainWindow):
         global width
@@ -139,6 +143,26 @@ class Ui_MainWindow(object):
         self.authkey.setGeometry(QtCore.QRect(400, 450, 200, 30))
         self.authkey.setObjectName("lineEdit")
         self.authkey.setPlaceholderText("authkey (optional)")
+        self.info = QtWidgets.QLabel(self.centralwidget)
+        self.info.setStyleSheet("color: #cccccc;")
+        font = QtGui.QFont()
+        font.setFamily("Tw Cen MT Condensed Extra Bold")
+        font.setPointSize(16)
+        self.info.setFont(font)
+        self.info.setObjectName("info")
+        self.info.setText("To use personal Developer ID and Authentication Key")
+        self.info.adjustSize()
+        self.info.move((MainWindow.width() - self.info.width())//2, 400)
+        self.info1 = QtWidgets.QLabel(self.centralwidget)
+        self.info1.setStyleSheet("color: #cccccc;")
+        font = QtGui.QFont()
+        font.setFamily("Tw Cen MT Condensed Extra Bold")
+        font.setPointSize(14)
+        self.info1.setFont(font)
+        self.info1.setObjectName("info1")
+        self.info1.setText("Learn more on how to get them by visiting my GitHub page")
+        self.info1.adjustSize()
+        self.info1.move((MainWindow.width() - self.info1.width()) // 2, 500)
 
         self.proceed = QtWidgets.QPushButton(self.centralwidget)
         self.proceed.setStyleSheet("color: black; background-color: grey;")
@@ -170,7 +194,7 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def processUsername(self):
-        global name, dev_id, auth_key, width, status, avatar_url, lastlogin1
+        global name, dev_auth, width, status, avatar_url, lastlogin1
         # disconnect openWindow function everytime while cheking for a new player
         try:
             self.proceed.clicked.disconnect(self.openWindow)
@@ -183,9 +207,12 @@ class Ui_MainWindow(object):
         # if they input their own devId and authKey
         if self.devid.text() != "" and self.authkey.text() != "":
             # replace default devId
-            dev_id = self.devid.text()
+            dev_auth[0] = self.devid.text()
             # replace default authKey
-            auth_key = self.authkey.text()
+            dev_auth[1] = self.authkey.text()
+            pickle.dump(dev_auth, open("Dev_Auth.dat", "wb"))
+            self.devid.setText("")
+            self.authkey.setText("")
         # if name was inputted
         if len(name) != 0:
             # starts async
@@ -249,7 +276,7 @@ class Ui_MainWindow(object):
                 self.lastlogin.setObjectName("lastlogin")
                 self.lastlogin.setText(lastlogin1)
                 self.lastlogin.adjustSize()
-                self.lastlogin.move((width - self.lastlogin.width())//2, 200)
+                self.lastlogin.move((width - self.lastlogin.width()) // 2, 200)
                 self.lastlogin.show()
             # set button to continue to the next window
             self.proceed.setText("Continue?")
@@ -257,14 +284,14 @@ class Ui_MainWindow(object):
             self.proceed.clicked.connect(self.openWindow)
 
     def openWindow(self):
-        global name, dev_id, auth_key, logfile
+        global name, dev_auth, logfile
         # import next window class Ui
         from LiveorFriends import Ui_LiveMatchorFriendsWindow
         try:
             # create window
             self.window = QtWidgets.QMainWindow()
             # grabs ui of second window
-            self.ui = Ui_LiveMatchorFriendsWindow(name, dev_id, auth_key)
+            self.ui = Ui_LiveMatchorFriendsWindow(name, dev_auth[0], dev_auth[1])
             # sets up the second ui in the new window
             self.ui.setupUi(self.window)
             # set title
@@ -282,7 +309,7 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label.setText(_translate("MainWindow", "Enter a player name"))
         self.label.adjustSize()
-        self.label.setGeometry(QtCore.QRect((MainWindow.width() - self.label.width())//2, 150, 330, 100))
+        self.label.setGeometry(QtCore.QRect((MainWindow.width() - self.label.width()) // 2, 150, 330, 100))
         self.label.adjustSize()
         self.proceed.setText(_translate("MainWindow", "Quit?"))
 
@@ -294,7 +321,7 @@ if __name__ == "__main__":
         try:
             app = QtWidgets.QApplication(sys.argv)
             MainWindow = QtWidgets.QMainWindow()
-            ui = Ui_MainWindow(dev_id, auth_key)
+            ui = Ui_MainWindow(dev_auth[0], dev_auth[1])
             ui.setupUi(MainWindow)
             MainWindow.setWindowTitle("Paladins Live Beta 1.0")
             MainWindow.show()

@@ -1,5 +1,6 @@
 aiohttp==3.7.3
 altgraph==0.17
+appdirs==1.4.4
 aRez==0.1.7
 async-timeout==3.0.1
 attrs==20.3.0
@@ -8,7 +9,9 @@ bottle-websocket==0.2.9
 cffi==1.14.4
 chardet==3.0.4
 click==7.1.2
+distlib==0.3.1
 Eel==0.12.4
+filelock==3.0.12
 future==0.18.2
 gevent==20.12.1
 gevent-websocket==0.10.1
@@ -29,7 +32,9 @@ python-dotenv==0.15.0
 pywin32-ctypes==0.2.0
 qt5-applications==5.15.2.2.1
 qt5-tools==5.15.2.1.0.1
+six==1.15.0
 typing-extensions==3.7.4.3
+virtualenv==20.4.2
 whichcraft==0.6.1
 yarl==1.6.3
 zope.event==4.5.0

@@ -12,18 +12,17 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 import traceback
 
-dev_id = 0  # Developer ID
-auth_key = ""  # Auth Key
+dev_auth = [0, ""]  # Developer ID and Auth Key
 
 name = ""
 
 
 class Ui_Refresh(object):
     def __init__(self, x, y, z):
-        global name, dev_id, auth_key
+        global name, dev_auth
         name = x
-        dev_id = y
-        auth_key = z
+        dev_auth[0] = y
+        dev_auth[1] = z
     def setupUi(self, Refresh):
         Refresh.setObjectName("Refresh")
         Refresh.setFixedSize(800, 600)
@@ -55,13 +54,13 @@ class Ui_Refresh(object):
         QtCore.QMetaObject.connectSlotsByName(Refresh)
 
     def backWindow(self):
-        global name, dev_id, auth_key, logfile
+        global name, dev_auth, logfile
         from LiveMatch import Ui_LiveMatchWindow
         try:
             # create window
             self.window = QtWidgets.QMainWindow()
             # grabs ui of second window
-            self.ui = Ui_LiveMatchWindow(name, dev_id, auth_key)
+            self.ui = Ui_LiveMatchWindow(name, dev_auth[0], dev_auth[1])
             # sets up the second ui in the new window
             self.ui.setupUi(self.window)
             # set title

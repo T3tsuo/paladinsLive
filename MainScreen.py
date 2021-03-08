@@ -142,6 +142,18 @@ class Ui_MainWindow(object):
         self.authkey.setGeometry(QtCore.QRect(400, 450, 200, 30))
         self.authkey.setObjectName("lineEdit")
         self.authkey.setPlaceholderText("authkey (optional)")
+
+        self.author = QtWidgets.QLabel(self.centralwidget)
+        self.author.setStyleSheet("color: #cccccc;")
+        font = QtGui.QFont()
+        font.setFamily("Tw Cen MT Condensed Extra Bold")
+        font.setPointSize(12)
+        self.author.setFont(font)
+        self.author.setObjectName("author")
+        self.author.setText("Made by: Takumi Comeau")
+        self.author.adjustSize()
+        self.author.move(int(MainWindow.width() - (self.author.width() * 1.1)), MainWindow.height() - (self.author.height() * 2))
+
         if not os.path.isfile("dev_auth.dat"):
             self.info = QtWidgets.QLabel(self.centralwidget)
             self.info.setStyleSheet("color: #cccccc;")
@@ -234,6 +246,20 @@ class Ui_MainWindow(object):
             pickle.dump(dev_auth, open("dev_auth.dat", "wb"))
             self.devid.setText("")
             self.authkey.setText("")
+            font = QtGui.QFont()
+            font.setFamily("Tw Cen MT Condensed Extra Bold")
+            font.setPointSize(18)
+            self.info.setFont(font)
+            self.info.setText("Current:")
+            self.info.adjustSize()
+            self.info.move((MainWindow.width() - self.info.width()) // 2, 375)
+            font = QtGui.QFont()
+            font.setFamily("Tw Cen MT Condensed Extra Bold")
+            font.setPointSize(12)
+            self.info1.setFont(font)
+            self.info1.setText("Dev ID: " + str(dev_auth[0]) + "    Auth Key: " + dev_auth[1]);
+            self.info1.adjustSize()
+            self.info1.move((MainWindow.width() - self.info1.width()) // 2, 412)
         # if name was inputted
         if len(name) != 0:
             # starts async

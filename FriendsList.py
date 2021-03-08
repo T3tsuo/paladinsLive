@@ -166,7 +166,7 @@ class Ui_FriendsList(object):
     def setupUi(self, FriendsList):
         sizeObject = QtWidgets.QDesktopWidget().screenGeometry(-1)
         FriendsList.setObjectName("FriendsList")
-        FriendsList.setFixedSize(900, sizeObject.height() - 100)
+        FriendsList.setFixedSize(900, sizeObject.height() - 175)
         FriendsList.setStyleSheet("background-color: black;")
         self.centralwidget = QtWidgets.QWidget(FriendsList)
         self.centralwidget.setObjectName("centralwidget")
@@ -219,7 +219,7 @@ class Ui_FriendsList(object):
         self.backBtn.setObjectName("backBtn")
         self.backBtn.setStyleSheet("background-color: grey; color: black;")
         self.scrollArea = QtWidgets.QScrollArea(self.centralwidget)
-        self.scrollArea.setGeometry(QtCore.QRect(0, 100, 900, sizeObject.height() - 200))
+        self.scrollArea.setGeometry(QtCore.QRect(0, 100, 900, sizeObject.height() - 275))
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()

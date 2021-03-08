@@ -18,10 +18,15 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import traceback
 import pickle
 
-if not os.path.isfile("dev_auth.dat"):
+if not os.path.isfile("dev_auth.dat") and not os.path.isfile("default.dat"):
     dev_auth = [0, ""]  # Developer ID and Auth Key
-else:
+    pickle.dump(dev_auth, open("default.dat", "wb"))
+
+elif os.path.isfile("dev_auth.dat"):
     dev_auth = pickle.load(open("dev_auth.dat", "rb"))
+
+else:
+    dev_auth = pickle.load(open("default.dat", "rb"))
 
 title = "Paladins Live Beta 2.0"
 name = ""
@@ -157,7 +162,18 @@ class Ui_MainWindow(object):
         self.author.adjustSize()
         self.author.move(int(MainWindow.width() - self.author.width()), MainWindow.height() - self.author.height())
 
+        self.reset = QtWidgets.QPushButton(self.centralwidget)
+        self.reset.setStyleSheet("color: black; background-color: grey;")
+        self.reset.setGeometry(QtCore.QRect(350, 550, 100, 50))
+        font = QtGui.QFont()
+        font.setFamily("Tw Cen MT")
+        font.setPointSize(14)
+        self.reset.setFont(font)
+        self.reset.setObjectName("Reset")
+        self.reset.setText("Reset")
+
         if not os.path.isfile("dev_auth.dat"):
+            self.reset.hide()
             self.info = QtWidgets.QLabel(self.centralwidget)
             self.info.setStyleSheet("color: #cccccc;")
             font = QtGui.QFont()
@@ -179,6 +195,7 @@ class Ui_MainWindow(object):
             self.info1.adjustSize()
             self.info1.move((MainWindow.width() - self.info1.width()) // 2, 500)
         else:
+            self.reset.show()
             self.info = QtWidgets.QLabel(self.centralwidget)
             self.info.setStyleSheet("color: #cccccc;")
             font = QtGui.QFont()
@@ -217,10 +234,38 @@ class Ui_MainWindow(object):
         self.lastlogin = QtWidgets.QLabel(self.centralwidget)
 
         self.username.returnPressed.connect(self.processUsername)
+        self.devid.returnPressed.connect(self.processUsername)
+        self.authkey.returnPressed.connect(self.processUsername)
         self.proceed.clicked.connect(MainWindow.close)
+        self.reset.clicked.connect(self.reset_default)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def reset_default(self):
+        global dev_auth
+        if os.path.isfile("dev_auth.dat"):
+            os.remove("dev_auth.dat")
+            dev_auth = pickle.load(open("default.dat", "rb"))
+            self.devid.setText("")
+            self.authkey.setText("")
+            font = QtGui.QFont()
+            font.setFamily("Tw Cen MT Condensed Extra Bold")
+            font.setPointSize(16)
+            self.info.setFont(font)
+            self.info.setObjectName("info")
+            self.info.setText("To use personal Developer ID and Authentication Key")
+            self.info.adjustSize()
+            self.info.move((width - self.info.width()) // 2, 400)
+            font = QtGui.QFont()
+            font.setFamily("Tw Cen MT Condensed Extra Bold")
+            font.setPointSize(14)
+            self.info1.setFont(font)
+            self.info1.setObjectName("info1")
+            self.info1.setText("Learn more on how to get them by visiting my GitHub page")
+            self.info1.adjustSize()
+            self.info1.move((width - self.info1.width()) // 2, 500)
+            self.reset.hide()
 
     def processUsername(self):
         global name, dev_auth, width, status, avatar_url, lastlogin1
@@ -248,14 +293,15 @@ class Ui_MainWindow(object):
             self.info.setFont(font)
             self.info.setText("Current:")
             self.info.adjustSize()
-            self.info.move((MainWindow.width() - self.info.width()) // 2, 375)
+            self.info.move((width - self.info.width()) // 2, 375)
             font = QtGui.QFont()
             font.setFamily("Tw Cen MT Condensed Extra Bold")
             font.setPointSize(12)
             self.info1.setFont(font)
             self.info1.setText("Dev ID: " + str(dev_auth[0]) + "    Auth Key: " + dev_auth[1]);
             self.info1.adjustSize()
-            self.info1.move((MainWindow.width() - self.info1.width()) // 2, 412)
+            self.info1.move((width - self.info1.width()) // 2, 412)
+            self.reset.show()
         # if name was inputted
         if len(name) != 0:
             # starts async

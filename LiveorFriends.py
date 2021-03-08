@@ -13,19 +13,22 @@ import traceback
 
 dev_auth = [0, ""]  # Developer ID and Auth Key
 
+title = ""
 name = ""
 
 
 class Ui_LiveMatchorFriendsWindow(object):
     # when window is created, get data from past window
-    def __init__(self, x, y, z):
-        global name, dev_auth
+    def __init__(self, x, y, z, w):
+        global name, dev_auth, title
         # set the name
         name = x
         # current dev id
         dev_auth[0] = y
         # current auth key
         dev_auth[1] = z
+        # set current title
+        title = w
 
     def setupUi(self, LiveMatchorFriendsWindow):
         LiveMatchorFriendsWindow.setObjectName("LiveMatchorFriendsWindow")
@@ -66,13 +69,6 @@ class Ui_LiveMatchorFriendsWindow(object):
         self.backButton.setFont(font)
         self.backButton.setObjectName("backButton")
         LiveMatchorFriendsWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(LiveMatchorFriendsWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 26))
-        self.menubar.setObjectName("menubar")
-        LiveMatchorFriendsWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(LiveMatchorFriendsWindow)
-        self.statusbar.setObjectName("statusbar")
-        LiveMatchorFriendsWindow.setStatusBar(self.statusbar)
 
         self.backButton.clicked.connect(self.backWindow)
         self.backButton.clicked.connect(LiveMatchorFriendsWindow.close)
@@ -82,46 +78,46 @@ class Ui_LiveMatchorFriendsWindow(object):
         self.livematch_button.clicked.connect(LiveMatchorFriendsWindow.close)
         self.livematch_button.setAutoDefault(True)
 
-        # self.friends_button.clicked.connect(self.openFriends_List)
-        # self.friends_button.clicked.connect(LiveMatchorFriendsWindow.close)
+        self.friends_button.clicked.connect(self.openFriends_List)
+        self.friends_button.clicked.connect(LiveMatchorFriendsWindow.close)
 
         self.retranslateUi(LiveMatchorFriendsWindow)
         QtCore.QMetaObject.connectSlotsByName(LiveMatchorFriendsWindow)
 
-    '''def openFriends_List(self):
-        global name, dev_auth, logfile
+    def openFriends_List(self):
+        global name, dev_auth, logfile, title
         # grab Ui of FriendsList
         from FriendsList import Ui_FriendsList
         try:
             #create window
             self.window = QtWidgets.QMainWindow()
             # grabs ui of friendslist window
-            self.ui = Ui_FriendsList(name, dev_auth[0], dev_auth[1])
+            self.ui = Ui_FriendsList(name, dev_auth[0], dev_auth[1], title)
             # set up the ui of FriendsList
             self.ui.setupUi(self.window)
             # set up title
-            self.window.setWindowTitle("Paladins Live Beta 1.0")
+            self.window.setWindowTitle(title)
             # display new window
             self.window.show()
         except Exception:
             username = os.getlogin()
             with open(f"C:\\Users\\{username}\\Desktop\\PaladinsLiveBeta-Error.log", "a") as logfile:
                 traceback.print_exc(file=logfile)
-            raise'''
+            raise
 
     def openLive_Match(self):
-        global name, dev_auth, logfile
+        global name, dev_auth, logfile, title
         # grab Ui of LiveMatch
         from LiveMatch import Ui_LiveMatchWindow
         try:
             # create window
             self.window = QtWidgets.QMainWindow()
             # grabs ui of second window
-            self.ui = Ui_LiveMatchWindow(name, dev_auth[0], dev_auth[1])
+            self.ui = Ui_LiveMatchWindow(name, dev_auth[0], dev_auth[1], title)
             # sets up the second ui in the new window
             self.ui.setupUi(self.window)
             # set title
-            self.window.setWindowTitle("Paladins Live Beta 1.0")
+            self.window.setWindowTitle(title)
             # display new window
             self.window.show()
         except Exception:
@@ -132,18 +128,18 @@ class Ui_LiveMatchorFriendsWindow(object):
 
 
     def backWindow(self):
-        global logfile, dev_auth
+        global logfile, dev_auth, title
         # grab Ui of MainScreen
         from MainScreen import Ui_MainWindow
         try:
             # create window
             self.window = QtWidgets.QMainWindow()
             # grabs ui of second window
-            self.ui = Ui_MainWindow(dev_auth[0], dev_auth[1])
+            self.ui = Ui_MainWindow(dev_auth[0], dev_auth[1], title)
             # sets up the second ui in the new window
             self.ui.setupUi(self.window)
             # set title
-            self.window.setWindowTitle("Paladins Live Beta 1.0")
+            self.window.setWindowTitle(title)
             # display new window
             self.window.show()
         except Exception:

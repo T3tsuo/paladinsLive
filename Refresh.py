@@ -14,15 +14,17 @@ import traceback
 
 dev_auth = [0, ""]  # Developer ID and Auth Key
 
+title = ""
 name = ""
 
 
 class Ui_Refresh(object):
-    def __init__(self, x, y, z):
-        global name, dev_auth
+    def __init__(self, x, y, z, w):
+        global name, dev_auth, title
         name = x
         dev_auth[0] = y
         dev_auth[1] = z
+        title = w
     def setupUi(self, Refresh):
         Refresh.setObjectName("Refresh")
         Refresh.setFixedSize(800, 600)
@@ -54,17 +56,17 @@ class Ui_Refresh(object):
         QtCore.QMetaObject.connectSlotsByName(Refresh)
 
     def backWindow(self):
-        global name, dev_auth, logfile
+        global name, dev_auth, logfile, title
         from LiveMatch import Ui_LiveMatchWindow
         try:
             # create window
             self.window = QtWidgets.QMainWindow()
             # grabs ui of second window
-            self.ui = Ui_LiveMatchWindow(name, dev_auth[0], dev_auth[1])
+            self.ui = Ui_LiveMatchWindow(name, dev_auth[0], dev_auth[1], title)
             # sets up the second ui in the new window
             self.ui.setupUi(self.window)
             # set title
-            self.window.setWindowTitle("Paladins Live Beta 1.0")
+            self.window.setWindowTitle(title)
             # display new window
             self.window.show()
         except Exception:

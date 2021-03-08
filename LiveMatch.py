@@ -19,6 +19,7 @@ dev_auth = [0, ""]  # Developer ID and Auth Key
 
 match_name = ""
 
+title = ""
 name = ""
 status = ""
 map_name = ""
@@ -193,14 +194,16 @@ async def get_champion(list, name):
 
 
 class Ui_LiveMatchWindow(object):
-    def __init__(self, x, y, z):
-        global name, dev_auth
+    def __init__(self, x, y, z, w):
+        global name, dev_auth, title
         # set the name
         name = x
         # current dev Id
         dev_auth[0] = y
         # current auth key
         dev_auth[1] = z
+        # set current title
+        title = w
 
     def setupUi(self, LiveMatchWindow):
         LiveMatchWindow.setObjectName("LiveMatchWindow")
@@ -380,7 +383,6 @@ class Ui_LiveMatchWindow(object):
         for i in range(0, len(championsurl1), 1):
             if championsurl1[i] != "BOT":
                 self.kda = QtWidgets.QLabel(self.centralwidget)
-                self.kda.setStyleSheet("color: #cccccc;")
                 self.kda.setStyleSheet("color: #cccccc;")
                 self.kda.setText(str(kdas1[i]))
                 font = QtGui.QFont()
@@ -592,7 +594,7 @@ class Ui_LiveMatchWindow(object):
                 self.rank.setScaledContents(True)
 
     def openRefresh(self):
-        global dev_auth, logfile
+        global dev_auth, logfile, title
         # reset all match data
         self.reset_data()
         # import refresh ui
@@ -601,11 +603,11 @@ class Ui_LiveMatchWindow(object):
             # create window
             self.window = QtWidgets.QMainWindow()
             # grabs ui of second window
-            self.ui = Ui_Refresh(name, dev_auth[0], dev_auth[1])
+            self.ui = Ui_Refresh(name, dev_auth[0], dev_auth[1], title)
             # sets up the second ui in the new window
             self.ui.setupUi(self.window)
             # set title
-            self.window.setWindowTitle("Paladins Live Beta 1.0")
+            self.window.setWindowTitle(title)
             # display new window
             self.window.show()
         # if there's a crash write in error log
@@ -616,7 +618,7 @@ class Ui_LiveMatchWindow(object):
             raise
 
     def backWindow(self):
-        global dev_auth, logfile
+        global dev_auth, logfile, title
         # reset all match data
         self.reset_data()
         # import ui of previous window
@@ -625,11 +627,11 @@ class Ui_LiveMatchWindow(object):
             # create window
             self.window = QtWidgets.QMainWindow()
             # grabs ui of second window
-            self.ui = Ui_LiveMatchorFriendsWindow(name, dev_auth[0], dev_auth[1])
+            self.ui = Ui_LiveMatchorFriendsWindow(name, dev_auth[0], dev_auth[1], title)
             # sets up the second ui in the new window
             self.ui.setupUi(self.window)
             # set title
-            self.window.setWindowTitle("Paladins Live Beta 1.0")
+            self.window.setWindowTitle(title)
             # display new window
             self.window.show()
         except Exception:

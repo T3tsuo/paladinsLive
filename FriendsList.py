@@ -19,7 +19,9 @@ from datetime import datetime, date
 
 dev_auth = [0, ""]  # Developer ID and Auth Key
 
+title = ""
 name = ""
+
 friend_list = []
 offline = []
 online = []
@@ -46,39 +48,53 @@ async def friends_list(n):
     friend_list = await p.get_friends()
 
     for i in range(0, len(friend_list), 1):
-        status = (await friend_list[i].get_status()).status.name
-        # if the player is online
-        if status != "Offline" and status != "Unknown" and friend_list[i].private is False:
-            p = await api.get_player(friend_list[i].id)
-            # add it to the online list
-            online.append(p)
-        # if not
-        elif status == "Offline" and friend_list[i].private is False:
-            p = await api.get_player(friend_list[i].id)
-            # then add it to the offline list
-            offline.append(p)
+        try:
+            # if player exist
+            status = (await friend_list[i].get_status()).status.name
+            # then make sure it's added to the list
+            exists = True
+        except arez.exceptions.NotFound:
+            # if there's a problem, put them false
+            exists = False
+        if exists:
+            # if the player is online
+            if status != "Offline" and friend_list[i].private is False:
+                p = await api.get_player(friend_list[i].id)
+                # add it to the online list
+                online.append(p)
+            # if not
+            elif status == "Offline" and friend_list[i].private is False:
+                p = await api.get_player(friend_list[i].id)
+                # then add it to the offline list
+                offline.append(p)
 
     for i in range(0, len(online), 1):
         avatar_url1.append(online[i].avatar_url)
         names1.append(online[i].name)
-        statuses1.append((await online[i].get_status()).status.name)
+        try:
+            statuses1.append((await online[i].get_status()).status.name)
+        except arez.exceptions.HTTPException:
+            statuses1.append("Error")
         rank1.append(online[i].ranked_keyboard.rank.name)
         login1.append("Now")
-        day = string_day(str(online[i].created_at.day))
-        creation1.append(day + "\n" + month_string(online[i].created_at.month) + "\n" +
+        day = str(online[i].created_at.day)
+        creation1.append(day + " " + month_string(online[i].created_at.month) + " " +
                          str(online[i].created_at.year))
 
     for i in range(0, len(offline), 1):
         avatar_url2.append(offline[i].avatar_url)
         names2.append(offline[i].name)
-        statuses2.append((await offline[i].get_status()).status.name)
+        try:
+            statuses2.append((await offline[i].get_status()).status.name)
+        except arez.exceptions.HTTPException:
+            statuses2.append("Error")
         rank2.append(offline[i].ranked_keyboard.rank.name)
         now = datetime.now()
         time = now.time()
         date1 = datetime.date(now)
         login2.append(grab_time(date1, time, offline[i]))
-        day = string_day(str(offline[i].created_at.day))
-        creation2.append(day + "\n" + month_string(offline[i].created_at.month) + "\n" +
+        day = str(offline[i].created_at.day)
+        creation2.append(day + " " + month_string(offline[i].created_at.month) + " " +
                          str(offline[i].created_at.year))
 
     if len(offline) == 0 and len(online) == 0 :
@@ -93,13 +109,13 @@ def grab_time(d, t, p):
         if (d - p.last_login.date()).days >= 365:
             year = (d - p.last_login.date()).days // 365
             if year == 1:
-                date1 = str(year) + " year\nago"
+                date1 = str(year) + " year ago"
             else:
-                date1 = str(year) + " years\nago"
+                date1 = str(year) + " years ago"
         elif (d - p.last_login.date()).days == 1:
-            date1 = str((d - p.last_login.date()).days) + " day\nago"
+            date1 = str((d - p.last_login.date()).days) + " day ago"
         else:
-            date1 = str((d - p.last_login.date()).days) + " days\nago"
+            date1 = str((d - p.last_login.date()).days) + " days ago"
         return date1
     else:
         date1 = datetime.combine(date.today(), t) - datetime.combine(date.today(), p.last_login.time())
@@ -107,21 +123,21 @@ def grab_time(d, t, p):
             if date1.seconds >= 3600:
                 time = date1.seconds//3600
                 if time == 1:
-                    time = str(time) + " hour\nago"
+                    time = str(time) + " hour ago"
                 else:
-                    time = str(time) + " hours\nago"
+                    time = str(time) + " hours ago"
             elif date1.seconds >= 60:
                 time = date1.seconds//60
                 if time == 1:
-                    time = str(time) + " minute\nago"
+                    time = str(time) + " minute ago"
                 else:
-                    time = str(time) + " minutes\nago"
+                    time = str(time) + " minutes ago"
             else:
                 time = date1.seconds
                 if time == 1:
-                    time = str(time) + " second\nago"
+                    time = str(time) + " second ago"
                 else:
-                    time = str(time) + " seconds\nago"
+                    time = str(time) + " seconds ago"
         else:
             time = "Now"
         return time
@@ -140,15 +156,17 @@ def month_string(x):
 
 
 class Ui_FriendsList(object):
-    def __init__(self, x, y, z):
-        global name, dev_auth
+    def __init__(self, x, y, z, w):
+        global name, dev_auth, title
         name = x
         dev_auth[0] = y
         dev_auth[1] = z
+        title = w
 
     def setupUi(self, FriendsList):
+        sizeObject = QtWidgets.QDesktopWidget().screenGeometry(-1)
         FriendsList.setObjectName("FriendsList")
-        FriendsList.setFixedSize(640, 900)
+        FriendsList.setFixedSize(900, sizeObject.height() - 100)
         FriendsList.setStyleSheet("background-color: black;")
         self.centralwidget = QtWidgets.QWidget(FriendsList)
         self.centralwidget.setObjectName("centralwidget")
@@ -161,7 +179,7 @@ class Ui_FriendsList(object):
         self.Players.setObjectName("Players")
         self.Players.setStyleSheet("color: #cccccc;")
         self.Statuses = QtWidgets.QLabel(self.centralwidget)
-        self.Statuses.setGeometry(QtCore.QRect(160, 70, 61, 21))
+        self.Statuses.setGeometry(QtCore.QRect(200, 70, 61, 21))
         font = QtGui.QFont()
         font.setFamily("Tw Cen MT")
         font.setPointSize(14)
@@ -169,7 +187,7 @@ class Ui_FriendsList(object):
         self.Statuses.setObjectName("Statuses")
         self.Statuses.setStyleSheet("color: #cccccc;")
         self.Ranks = QtWidgets.QLabel(self.centralwidget)
-        self.Ranks.setGeometry(QtCore.QRect(270, 70, 61, 21))
+        self.Ranks.setGeometry(QtCore.QRect(380, 70, 61, 21))
         font = QtGui.QFont()
         font.setFamily("Tw Cen MT")
         font.setPointSize(14)
@@ -177,7 +195,7 @@ class Ui_FriendsList(object):
         self.Ranks.setObjectName("Ranks")
         self.Ranks.setStyleSheet("color: #cccccc;")
         self.LastLogins = QtWidgets.QLabel(self.centralwidget)
-        self.LastLogins.setGeometry(QtCore.QRect(360, 70, 101, 21))
+        self.LastLogins.setGeometry(QtCore.QRect(480, 70, 101, 21))
         font = QtGui.QFont()
         font.setFamily("Tw Cen MT")
         font.setPointSize(14)
@@ -185,7 +203,7 @@ class Ui_FriendsList(object):
         self.LastLogins.setObjectName("LastLogins")
         self.LastLogins.setStyleSheet("color: #cccccc;")
         self.Creations = QtWidgets.QLabel(self.centralwidget)
-        self.Creations.setGeometry(QtCore.QRect(500, 70, 91, 21))
+        self.Creations.setGeometry(QtCore.QRect(660, 70, 91, 21))
         font = QtGui.QFont()
         font.setFamily("Tw Cen MT")
         font.setPointSize(14)
@@ -201,22 +219,23 @@ class Ui_FriendsList(object):
         self.backBtn.setObjectName("backBtn")
         self.backBtn.setStyleSheet("background-color: grey; color: black;")
         self.scrollArea = QtWidgets.QScrollArea(self.centralwidget)
-        self.scrollArea.setGeometry(QtCore.QRect(10, 100, 621, 741))
+        self.scrollArea.setGeometry(QtCore.QRect(0, 100, 900, sizeObject.height() - 200))
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 619, 739))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 588, 2018))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
+        self.verticalLayout = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.frame = QtWidgets.QFrame(self.scrollAreaWidgetContents)
+        self.frame.setEnabled(True)
+        self.frame.setMinimumSize(QtCore.QSize(0, 0))
+        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame.setObjectName("frame")
+        self.verticalLayout.addWidget(self.frame)
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
-        self.scrollArea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         FriendsList.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(FriendsList)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 640, 26))
-        self.menubar.setObjectName("menubar")
-        FriendsList.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(FriendsList)
-        self.statusbar.setObjectName("statusbar")
-        FriendsList.setStatusBar(self.statusbar)
 
         self.backBtn.clicked.connect(self.goback)
         self.backBtn.clicked.connect(FriendsList.close)
@@ -226,9 +245,10 @@ class Ui_FriendsList(object):
 
         if hasFriends:
             self.set_images()
+            self.set_data()
         else:
             # create an label to notify user
-            self.invalid = QtWidgets.QLabel(self.centralwidget)
+            self.invalid = QtWidgets.QLabel(self.frame)
             # set style
             self.invalid.setStyleSheet("color: #cccccc;")
             # set font
@@ -249,12 +269,100 @@ class Ui_FriendsList(object):
         self.retranslateUi(FriendsList)
         QtCore.QMetaObject.connectSlotsByName(FriendsList)
 
+    def set_data(self):
+        # this will be used to keep track of iterator for the next list
+        temp = 0
+        for i in range(0, len(online), 1):
+            self.name = QtWidgets.QLabel(self.frame)
+            self.name.setStyleSheet("color: #cccccc;")
+            self.name.setText(names1[i])
+            font = QtGui.QFont()
+            font.setFamily("Tw Cen MT")
+            font.setPointSize(14)
+            self.name.setFont(font)
+            self.name.setObjectName("names1")
+            self.name.adjustSize()
+            self.name.move(self.avatar.x(), 110 * i + self.avatar.height() + 20)
+            self.status = QtWidgets.QLabel(self.frame)
+            self.status.setStyleSheet("color: #cccccc;")
+            self.status.setText(statuses1[i])
+            font = QtGui.QFont()
+            font.setFamily("Tw Cen MT Condensed Extra Bold")
+            font.setPointSize(20)
+            self.status.setFont(font)
+            self.status.setObjectName("statuses1")
+            self.status.adjustSize()
+            self.status.move(230 - self.status.width()//2, 110 * i + 20 + self.avatar.height()//4)
+            self.lastlogin = QtWidgets.QLabel(self.frame)
+            self.lastlogin.setStyleSheet("color: #cccccc;")
+            self.lastlogin.setText(login1[i])
+            font = QtGui.QFont()
+            font.setFamily("Tw Cen MT Condensed Extra Bold")
+            font.setPointSize(16)
+            self.lastlogin.setFont(font)
+            self.lastlogin.setObjectName("lastlogins1")
+            self.lastlogin.adjustSize()
+            self.lastlogin.move(490 - self.lastlogin.width() // 4, 110 * i + 20 + self.avatar.height() // 4)
+            self.creation = QtWidgets.QLabel(self.frame)
+            self.creation.setStyleSheet("color: #cccccc;")
+            self.creation.setText(creation1[i])
+            font = QtGui.QFont()
+            font.setFamily("Tw Cen MT Condensed Extra Bold")
+            font.setPointSize(16)
+            self.creation.setFont(font)
+            self.creation.setObjectName("creations1")
+            self.creation.adjustSize()
+            self.creation.move(680 - self.creation.width() // 4, 110 * i + 20 + self.avatar.height() // 4)
+            if i == len(online) - 1:
+                temp = i + 1
+        for i in range(0, len(offline), 1):
+            self.name = QtWidgets.QLabel(self.frame)
+            self.name.setStyleSheet("color: #cccccc;")
+            self.name.setText(names2[i])
+            font = QtGui.QFont()
+            font.setFamily("Tw Cen MT")
+            font.setPointSize(14)
+            self.name.setFont(font)
+            self.name.setObjectName("names1")
+            self.name.adjustSize()
+            self.name.move(self.avatar.x(), 110 * (i + temp) + self.avatar.height() + 20)
+            self.status = QtWidgets.QLabel(self.frame)
+            self.status.setStyleSheet("color: #cccccc;")
+            self.status.setText(statuses2[i])
+            font = QtGui.QFont()
+            font.setFamily("Tw Cen MT Condensed Extra Bold")
+            font.setPointSize(20)
+            self.status.setFont(font)
+            self.status.setObjectName("statuses2")
+            self.status.adjustSize()
+            self.status.move(230 - self.status.width()//2, 110*(i + temp) + 20 + self.avatar.height()//4)
+            self.lastlogin = QtWidgets.QLabel(self.frame)
+            self.lastlogin.setStyleSheet("color: #cccccc;")
+            self.lastlogin.setText(login2[i])
+            font = QtGui.QFont()
+            font.setFamily("Tw Cen MT Condensed Extra Bold")
+            font.setPointSize(16)
+            self.lastlogin.setFont(font)
+            self.lastlogin.setObjectName("lastlogins1")
+            self.lastlogin.adjustSize()
+            self.lastlogin.move(490 - self.lastlogin.width() // 4, 110 * (i + temp) + 20 + self.avatar.height() // 4)
+            self.creation = QtWidgets.QLabel(self.frame)
+            self.creation.setStyleSheet("color: #cccccc;")
+            self.creation.setText(creation2[i])
+            font = QtGui.QFont()
+            font.setFamily("Tw Cen MT Condensed Extra Bold")
+            font.setPointSize(16)
+            self.creation.setFont(font)
+            self.creation.setObjectName("creations1")
+            self.creation.adjustSize()
+            self.creation.move(680 - self.creation.width() // 4, 110 * (i + temp) + 20 + self.avatar.height() // 4)
 
     def set_images(self):
+        # this will be used to keep track of iterator for the next list
         temp = 0
         for i in range(0, len(online), 1):
             try:
-                self.avatar = QtWidgets.QLabel(self.scrollAreaWidgetContents)
+                self.avatar = QtWidgets.QLabel(self.frame)
                 image = QtGui.QImage()
                 image.loadFromData(urllib.request.urlopen(avatar_url1[i]).read())
                 self.avatar.show()
@@ -262,7 +370,7 @@ class Ui_FriendsList(object):
                 self.avatar.setPixmap(QtGui.QPixmap(image))
                 self.avatar.setScaledContents(True)
             except Exception:
-                self.avatar = QtWidgets.QLabel(self.scrollAreaWidgetContents)
+                self.avatar = QtWidgets.QLabel(self.frame)
                 self.avatar.setStyleSheet("color: #cccccc;")
                 font = QtGui.QFont()
                 font.setFamily("Tw Cen MT Condensed Extra Bold")
@@ -271,11 +379,17 @@ class Ui_FriendsList(object):
                 self.avatar.setObjectName("avatar")
                 self.avatar.setText("New")
                 self.avatar.adjustSize()
+                self.avatar.setGeometry(QtCore.QRect(30, 110*i + 20, 70, 70))
+            self.rank = QtWidgets.QLabel(self.frame)
+            self.rank.setGeometry(QtCore.QRect(360, 110*i + 20, 70, 70))
+            self.rank.setObjectName("rank1")
+            self.rank.setPixmap(QtGui.QPixmap(str(os.getcwd()) + "/img/rank/" + rank1[i] + ".png"))
+            self.rank.setScaledContents(True)
             if i == len(online) - 1:
                 temp = i + 1
         for i in range(0, len(offline), 1):
             try:
-                self.avatar = QtWidgets.QLabel(self.scrollAreaWidgetContents)
+                self.avatar = QtWidgets.QLabel(self.frame)
                 image = QtGui.QImage()
                 image.loadFromData(urllib.request.urlopen(avatar_url2[i]).read())
                 self.avatar.show()
@@ -283,7 +397,7 @@ class Ui_FriendsList(object):
                 self.avatar.setPixmap(QtGui.QPixmap(image))
                 self.avatar.setScaledContents(True)
             except Exception:
-                self.avatar = QtWidgets.QLabel(self.scrollAreaWidgetContents)
+                self.avatar = QtWidgets.QLabel(self.frame)
                 self.avatar.setStyleSheet("color: #cccccc;")
                 font = QtGui.QFont()
                 font.setFamily("Tw Cen MT Condensed Extra Bold")
@@ -292,20 +406,49 @@ class Ui_FriendsList(object):
                 self.avatar.setObjectName("avatar")
                 self.avatar.setText("New")
                 self.avatar.adjustSize()
+                self.avatar.setGeometry(QtCore.QRect(30, 110*(i + temp) + 20, 70, 70))
+            self.rank = QtWidgets.QLabel(self.frame)
+            self.rank.setGeometry(QtCore.QRect(360, 110*(i + temp) + 20, 70, 70))
+            self.rank.setObjectName("rank1")
+            self.rank.setPixmap(QtGui.QPixmap(str(os.getcwd()) + "/img/rank/" + rank2[i] + ".png"))
+            self.rank.setScaledContents(True)
+            if i == len(offline) - 1:
+                self.frame.setMinimumHeight(110 * (i + temp) + 50 + self.avatar.height())
+
+    def reset(self):
+        global friend_list, offline, online, avatar_url1, avatar_url2, names1, names2, statuses1, statuses2
+        global rank1, rank2, login1, login2, creation1, creation2
+        friend_list = []
+        offline = []
+        online = []
+        avatar_url1 = []
+        avatar_url2 = []
+        names1 = []
+        names2 = []
+        statuses1 = []
+        statuses2 = []
+        rank1 = []
+        rank2 = []
+        login1 = []
+        login2 = []
+        creation1 = []
+        creation2 = []
 
     def goback(self):
-        global name, dev_auth, logfile
+        global name, dev_auth, logfile, title
         # import ui of previous window
         from LiveorFriends import Ui_LiveMatchorFriendsWindow
         try:
+            # reset data
+            self.reset()
             # create window
             self.window = QtWidgets.QMainWindow()
             # grabs ui of second window
-            self.ui = Ui_LiveMatchorFriendsWindow(name, dev_auth[0], dev_auth[1])
+            self.ui = Ui_LiveMatchorFriendsWindow(name, dev_auth[0], dev_auth[1], title)
             # sets up the second ui in the new window
             self.ui.setupUi(self.window)
             # set title
-            self.window.setWindowTitle("Paladins Live Beta 1.0")
+            self.window.setWindowTitle(title)
             # display new window
             self.window.show()
         except Exception:

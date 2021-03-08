@@ -23,6 +23,7 @@ if not os.path.isfile("dev_auth.dat"):
 else:
     dev_auth = pickle.load(open("dev_auth.dat", "rb"))
 
+title = "Paladins Live Beta 2.0"
 name = ""
 status = ""
 avatar_url = ""
@@ -106,12 +107,14 @@ def grab_time(d, t, p):
 
 
 class Ui_MainWindow(object):
-    def __init__(self, y, z):
-        global dev_auth
+    def __init__(self, y, z, w):
+        global dev_auth, title
         # set default devId
         dev_auth[0] = y
         # set default authKey
         dev_auth[1] = z
+        # set title
+        title = w
 
     def setupUi(self, MainWindow):
         global width
@@ -152,7 +155,7 @@ class Ui_MainWindow(object):
         self.author.setObjectName("author")
         self.author.setText("Made by: Takumi Comeau")
         self.author.adjustSize()
-        self.author.move(int(MainWindow.width() - (self.author.width() * 1.1)), MainWindow.height() - (self.author.height() * 2))
+        self.author.move(int(MainWindow.width() - self.author.width()), MainWindow.height() - self.author.height())
 
         if not os.path.isfile("dev_auth.dat"):
             self.info = QtWidgets.QLabel(self.centralwidget)
@@ -206,13 +209,6 @@ class Ui_MainWindow(object):
         self.proceed.setFont(font)
         self.proceed.setObjectName("pushButton")
         MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 26))
-        self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
 
         width = MainWindow.width()
 
@@ -331,18 +327,18 @@ class Ui_MainWindow(object):
             self.proceed.clicked.connect(self.openWindow)
 
     def openWindow(self):
-        global name, dev_auth, logfile
+        global name, dev_auth, logfile, title
         # import next window class Ui
         from LiveorFriends import Ui_LiveMatchorFriendsWindow
         try:
             # create window
             self.window = QtWidgets.QMainWindow()
             # grabs ui of second window
-            self.ui = Ui_LiveMatchorFriendsWindow(name, dev_auth[0], dev_auth[1])
+            self.ui = Ui_LiveMatchorFriendsWindow(name, dev_auth[0], dev_auth[1], title)
             # sets up the second ui in the new window
             self.ui.setupUi(self.window)
             # set title
-            self.window.setWindowTitle("Paladins Live Beta 1.0")
+            self.window.setWindowTitle(title)
             # display new window
             self.window.show()
         except Exception:
@@ -368,9 +364,9 @@ if __name__ == "__main__":
         try:
             app = QtWidgets.QApplication(sys.argv)
             MainWindow = QtWidgets.QMainWindow()
-            ui = Ui_MainWindow(dev_auth[0], dev_auth[1])
+            ui = Ui_MainWindow(dev_auth[0], dev_auth[1], title)
             ui.setupUi(MainWindow)
-            MainWindow.setWindowTitle("Paladins Live Beta 1.0")
+            MainWindow.setWindowTitle(title)
             MainWindow.show()
             sys.exit(app.exec_())
         except Exception:

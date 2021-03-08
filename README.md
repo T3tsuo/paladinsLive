@@ -43,5 +43,5 @@ http://status.hirezstudios.com/
 ## If detected as a virus:
 I am using pyinstaller to compile my python files to an executable, and for some reason with pyinstaller it sometimes gets detected as a trojan and I am trying to figure out why. But it's a false positive and there should be nothing to worry about.
 
-Example of false positive with antivirus detectors:
+Example of false positive with antivirus detectors:  
 https://stackoverflow.com/questions/43777106/program-made-with-pyinstaller-now-seen-as-a-trojan-horse-by-avg

@@ -49,7 +49,7 @@ If you enter incorrect dev_id and auth_key then every player name will be invali
 If the default id and auth key is not working and your personal one isn't working as well, then there could be maintenance on Hi-Rez's end.
 http://status.hirezstudios.com/
 
-## If detected as a virus:
+## Pyinstaller issues:
 I am using pyinstaller to compile my python files to an executable, and for some reason with pyinstaller it sometimes gets detected as a trojan and I am trying to figure out why. But it's a false positive and there should be nothing to worry about.
 
 Example of false positive with antivirus detectors:  

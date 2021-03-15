@@ -65,7 +65,7 @@ async def check_player(i, api):
             except AttributeError:
                 status = "Error"
             # if the player is online
-            if status != "Offline" and friend_list[i].private is False:
+            if status != "Offline" or status != "Error" and friend_list[i].private is False:
                 p = await api.get_player(friend_list[i].id)
                 try:
                     statuses1.append((await p.get_status()).status.name)
@@ -73,7 +73,7 @@ async def check_player(i, api):
                     statuses1.append("Error")
                 executor.submit(online_data, friend=p)
             # if not
-            elif status == "Offline" and friend_list[i].private is False:
+            elif status == "Offline" or status == "Error" and friend_list[i].private is False:
                 p = await api.get_player(friend_list[i].id)
                 try:
                     statuses2.append((await p.get_status()).status.name)
@@ -418,7 +418,7 @@ class Ui_FriendsList(object):
             self.rank.setScaledContents(True)
             if i == len(names2) - 1:
                 temp = i + temp
-        self.frame.setMinimumHeight(110 * temp + 50 + self.avatar.height())
+        self.frame.setMinimumHeight(110 * (temp - 1) + 50 + self.avatar.height())
 
     def reset(self):
         global friend_list, avatar_url1, avatar_url2, names1, names2, statuses1, statuses2

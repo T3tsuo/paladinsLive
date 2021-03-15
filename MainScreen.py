@@ -56,8 +56,11 @@ async def main(n):
         return False
     # grab players name
     name = player.name
-    # and status
-    status = (await player.get_status()).status.name
+    try:
+        # and status
+        status = (await player.get_status()).status.name
+    except AttributeError:
+        status = "Error"
     # and avatar url
     avatar_url = player.avatar_url
     # and rank

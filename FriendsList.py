@@ -60,13 +60,16 @@ async def check_player(i, api):
     with concurrent.futures.ThreadPoolExecutor() as executor:
         try:
             # if player exist
-            status = (await friend_list[i].get_status()).status.name
+            try:
+                status = (await friend_list[i].get_status()).status.name
+            except AttributeError:
+                status = "Error"
             # if the player is online
             if status != "Offline" and friend_list[i].private is False:
                 p = await api.get_player(friend_list[i].id)
                 try:
                     statuses1.append((await p.get_status()).status.name)
-                except arez.exceptions.HTTPException:
+                except Exception:
                     statuses1.append("Error")
                 executor.submit(online_data, friend=p)
             # if not
@@ -414,7 +417,8 @@ class Ui_FriendsList(object):
             self.rank.setPixmap(QtGui.QPixmap(str(os.getcwd()) + "/img/rank/" + rank2[i] + ".png"))
             self.rank.setScaledContents(True)
             if i == len(names2) - 1:
-                self.frame.setMinimumHeight(110 * (i + temp) + 50 + self.avatar.height())
+                temp = i + temp
+        self.frame.setMinimumHeight(110 * temp + 50 + self.avatar.height())
 
     def reset(self):
         global friend_list, avatar_url1, avatar_url2, names1, names2, statuses1, statuses2

@@ -65,7 +65,7 @@ async def check_player(i, api):
             except AttributeError:
                 status = "Error"
             # if the player is online
-            if status != "Offline" or status != "Error" and friend_list[i].private is False:
+            if status != "Offline" and status != "Error" and friend_list[i].private is False:
                 p = await api.get_player(friend_list[i].id)
                 try:
                     statuses1.append((await p.get_status()).status.name)

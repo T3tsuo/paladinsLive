@@ -418,7 +418,7 @@ class Ui_FriendsList(object):
             self.rank.setScaledContents(True)
             if i == len(names2) - 1:
                 temp = i + temp
-        self.frame.setMinimumHeight(110 * (temp - 1) + 50 + self.avatar.height())
+        self.frame.setMinimumHeight(110 * temp + 50 + self.avatar.height())
 
     def reset(self):
         global friend_list, avatar_url1, avatar_url2, names1, names2, statuses1, statuses2

@@ -12,7 +12,7 @@ Match" button for the program to attempt to view both teams player stats of the 
 
 ### FriendsList (Beta):
 It will load your friendslist. It show you their current avatar, name, status, rank, last login and creation date of their account.  
-WARNING: the more friends you have the longer it will take to load the friendslist. (50 friends is a good amount, this is due to how slow the api wrapper is)
+WARNING: the more friends you have the longer it will take to load the friendslist. (50 friends is a good amount, this is due to the lack of threading which will be implemented)
 
 ### Shortcuts:
 Right now there are two keyboard shortcuts that can be used to make the navigation of the program more friendly. There is the "Esc" button that will go back instead

@@ -12,10 +12,15 @@ import arez
 from urllib.request import Request, urlopen
 import os
 import traceback
+import pickle
+import math
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 dev_auth = [0, ""]  # Developer ID and Auth Key
+
+with open('model', 'rb') as f:
+    model = pickle.load(f)
 
 match_name = ""
 
@@ -30,6 +35,8 @@ ranks1 = []
 kdas1 = []
 df1 = []
 winrates1 = []
+winrates1text = []
+awinrates1 = []
 champlvl1 = []
 playerlvl1 = []
 names1 = []
@@ -39,6 +46,8 @@ ranks2 = []
 kdas2 = []
 df2 = []
 winrates2 = []
+winrates2text = []
+awinrates2 = []
 champlvl2 = []
 playerlvl2 = []
 names2 = []
@@ -62,6 +71,7 @@ async def live_match(n):
     status1 = await player.get_status()
     # and get live match info
     match = await status1.get_live_match()
+    await match.expand_players()
     # get match name
     try:
         map_name = match.map_name
@@ -112,32 +122,51 @@ async def live_match(n):
             # if it cannot be added
             except AttributeError:
                 # add error message to the kda list
-                kdas1.append("Error")
+                kdas1.append("N/A")
             # find the champions df and add it to the team df list
             try:
                 df1.append(champions_stat.df)
             # if it cannot be added
             except AttributeError:
                 # add error message to the df list
-                df1.append("Error")
+                df1.append("N/A")
             # find the champions winrate and add it to the team winrate list
             try:
-                winrates1.append(champions_stat.winrate_text)
+                winrates1text.append(champions_stat.winrate_text)
+                winrates1.append(champions_stat.winrate)
             # if it cannot be added
             except AttributeError:
                 # add error message to the df list
                 winrates1.append("N/A")
+                winrates1text.append("N/A")
+            try:
+                if queue_name == "Casual Siege":
+                    awinrates1.append(p.casual.winrate)
+                elif queue_name == "Competitive Keyboard":
+                    awinrates1.append(p.ranked_keyboard.winrate)
+            except AttributeError:
+                # add error message to the df list
+                awinrates1.append("N/A")
         else:
             # if name doesn't exit add name as an error
-            names1.append("Error")
+            names1.append("N/A")
             # append their "rank"
             ranks1.append(team1[i].rank.name)
             # append error as kda
-            kdas1.append("Error")
+            kdas1.append("N/A")
             # same with df
-            df1.append("Error")
+            df1.append("N/A")
             # same with winrate
-            winrates1.append(team1[i].winrate_text)
+            winrates1.append(team1[i].winrate)
+            winrates1text.append(team1[i].winrate_text)
+            try:
+                if queue_name == "Casual Siege":
+                    awinrates1.append(p.casual.winrate)
+                elif queue_name == "Competitive Keyboard":
+                    awinrates1.append(p.ranked_keyboard.winrate)
+            except AttributeError:
+                # add error message to the df list
+                awinrates1.append("N/A")
     # same thing for team 2 members
     for i in range(0, len(team2), 1):
         championsurl2.append(team2[i].champion.icon_url)
@@ -154,21 +183,40 @@ async def live_match(n):
             try:
                 kdas2.append(int(champions_stat.kda2 * 100) / 100)
             except AttributeError:
-                kdas2.append("Error")
+                kdas2.append("N/A")
             try:
                 df2.append(champions_stat.df)
             except AttributeError:
-                df2.append("Error")
+                df2.append("N/A")
             try:
-                winrates2.append(champions_stat.winrate_text)
+                winrates2.append(champions_stat.winrate)
+                winrates2text.append(champions_stat.winrate_text)
             except AttributeError:
                 winrates2.append("N/A")
+                winrates2text.append("N/A")
+            try:
+                if queue_name == "Casual Siege":
+                    awinrates2.append(p.casual.winrate)
+                elif queue_name == "Competitive Keyboard":
+                    awinrates2.append(p.ranked_keyboard.winrate)
+            except AttributeError:
+                # add error message to the df list
+                awinrates2.append("N/A")
         else:
-            names2.append("Error")
+            names2.append("N/A")
             ranks2.append(team2[i].rank.name)
-            kdas2.append("Error")
-            df2.append("Error")
-            winrates2.append(team2[i].winrate_text)
+            kdas2.append("N/A")
+            df2.append("N/A")
+            winrates2.append(team2[i].winrate)
+            winrates2text.append(team2[i].winrate_text)
+            try:
+                if queue_name == "Casual Siege":
+                    awinrates2.append(p.casual.winrate)
+                elif queue_name == "Competitive Keyboard":
+                    awinrates2.append(p.ranked_keyboard.winrate)
+            except AttributeError:
+                # add error message to the df list
+                awinrates2.append("N/A")
     # if team members are less than 55
     if len(team1) < 5:
         # then for each missing member (bot)
@@ -363,9 +411,74 @@ class Ui_LiveMatchWindow(object):
             self.set_images()
             # display data found
             self.set_data(LiveMatchWindow.width())
+            self.predictmatch(LiveMatchWindow.width(), LiveMatchWindow.height())
 
         self.retranslateUi(LiveMatchWindow)
         QtCore.QMetaObject.connectSlotsByName(LiveMatchWindow)
+
+    def predictmatch(self, width, height):
+        if len(winrates1) == 5:
+            sumwin1 = 0
+            den1 = 0
+            sumwin2 = 0
+            den2 = 0
+            sumkda1 = 0
+            den3 = 0
+            sumkda2 = 0
+            den4 = 0
+            sumdf1 = 0
+            den5 = 0
+            sumdf2 = 0
+            den6 = 0
+            sumawin1 = 0
+            den7 = 0
+            sumawin2 = 0
+            den8 = 0
+            for i in range(len(winrates1)):
+                if winrates1[i] != "N/A" and not math.isnan(float(winrates1[i])):
+                    sumwin1 += winrates1[i]
+                    den1 += 1
+                if winrates2[i] != "N/A" and not math.isnan(float(winrates2[i])):
+                    sumwin2 += winrates2[i]
+                    den2 += 1
+                if kdas1[i] != "N/A":
+                    sumkda1 += kdas1[i]
+                    den3 += 1
+                if kdas2[i] != "N/A":
+                    sumkda2 += kdas2[i]
+                    den4 += 1
+                if df1[i] != "N/A":
+                    sumdf1 += df1[i]
+                    den5 += 1
+                if df2[i] != "N/A":
+                    sumdf2 += df2[i]
+                    den6 += 1
+                if awinrates1[i] != "N/A" and not math.isnan(float(awinrates1[i])):
+                    sumawin1 += awinrates1[i]
+                    den7 += 1
+                if awinrates2[i] != "N/A" and not math.isnan(float(awinrates2[i])):
+                    sumawin2 += awinrates2[i]
+                    den8 += 1
+            windif = sumwin1 / den1 - sumwin2 / den2
+            kdadif = sumkda1 / den3 - sumkda2 / den4
+            dfdif = sumdf1 / den5 - sumdf2 / den6
+            awindif = sumawin1 / den7 - sumawin2 / den8
+            # create an label to notify user
+            self.predict = QtWidgets.QLabel(self.centralwidget)
+            # set style
+            self.predict.setStyleSheet("color: #cccccc;")
+            # set font
+            font = QtGui.QFont()
+            font.setFamily("Tw Cen MT Condensed Extra Bold")
+            font.setPointSize(24)
+            self.predict.setFont(font)
+            # set object name
+            self.predict.setObjectName("predict")
+            # display username and players status
+            self.predict.setText(str(model.predict_proba([[windif, kdadif, dfdif, awindif]])))
+            # adjust size
+            self.predict.adjustSize()
+            self.predict.move((width - self.predict.width()) // 2, height - (self.predict.height() + 20))
 
     def set_data(self, width):
         self.match = QtWidgets.QLabel(self.centralwidget)
@@ -391,7 +504,7 @@ class Ui_LiveMatchWindow(object):
                 self.kda.setFont(font)
                 self.kda.setObjectName("kda1")
                 self.kda.adjustSize()
-                self.kda.setGeometry(QtCore.QRect(160, 110*i + 120, 0, 0))
+                self.kda.setGeometry(QtCore.QRect(160, 110 * i + 120, 0, 0))
                 self.kda.adjustSize()
                 self.df = QtWidgets.QLabel(self.centralwidget)
                 self.df.setStyleSheet("color: #cccccc;")
@@ -402,18 +515,18 @@ class Ui_LiveMatchWindow(object):
                 self.df.setFont(font)
                 self.df.setObjectName("df1")
                 self.df.adjustSize()
-                self.df.setGeometry(QtCore.QRect(160, 110*i + 120 + self.kda.height(), 0, 0))
+                self.df.setGeometry(QtCore.QRect(160, 110 * i + 120 + self.kda.height(), 0, 0))
                 self.df.adjustSize()
                 self.winrate = QtWidgets.QLabel(self.centralwidget)
                 self.winrate.setStyleSheet("color: #cccccc;")
-                self.winrate.setText(str(winrates1[i]))
+                self.winrate.setText(str(winrates1text[i]))
                 font = QtGui.QFont()
                 font.setFamily("Tw Cen MT")
                 font.setPointSize(14)
                 self.winrate.setFont(font)
                 self.winrate.setObjectName("winrate1")
                 self.winrate.adjustSize()
-                self.winrate.setGeometry(QtCore.QRect(250, 110*i + 155 - (self.winrate.height() // 2), 0, 0))
+                self.winrate.setGeometry(QtCore.QRect(250, 110 * i + 155 - (self.winrate.height() // 2), 0, 0))
                 self.winrate.adjustSize()
                 self.acclvl = QtWidgets.QLabel(self.centralwidget)
                 self.acclvl.setStyleSheet("color: #cccccc;")
@@ -424,7 +537,7 @@ class Ui_LiveMatchWindow(object):
                 self.acclvl.setFont(font)
                 self.acclvl.setObjectName("acclvl1")
                 self.acclvl.adjustSize()
-                self.acclvl.setGeometry(QtCore.QRect(370, 110*i + 120, 0, 0))
+                self.acclvl.setGeometry(QtCore.QRect(370, 110 * i + 120, 0, 0))
                 self.acclvl.adjustSize()
                 self.masterlvl = QtWidgets.QLabel(self.centralwidget)
                 self.masterlvl.setStyleSheet("color: #cccccc;")
@@ -435,7 +548,7 @@ class Ui_LiveMatchWindow(object):
                 self.masterlvl.setFont(font)
                 self.masterlvl.setObjectName("masterlvl1")
                 self.masterlvl.adjustSize()
-                self.masterlvl.setGeometry(QtCore.QRect(370, 110*i + 120 + self.acclvl.height(), 0, 0))
+                self.masterlvl.setGeometry(QtCore.QRect(370, 110 * i + 120 + self.acclvl.height(), 0, 0))
                 self.masterlvl.adjustSize()
                 self.name = QtWidgets.QLabel(self.centralwidget)
                 self.name.setStyleSheet("color: #cccccc;")
@@ -446,7 +559,7 @@ class Ui_LiveMatchWindow(object):
                 self.name.setFont(font)
                 self.name.setObjectName("name1")
                 self.name.adjustSize()
-                self.name.setGeometry(QtCore.QRect(40, 110*i + 190, 0, 0))
+                self.name.setGeometry(QtCore.QRect(40, 110 * i + 190, 0, 0))
                 self.name.adjustSize()
             else:
                 self.name = QtWidgets.QLabel(self.centralwidget)
@@ -458,7 +571,7 @@ class Ui_LiveMatchWindow(object):
                 self.name.setFont(font)
                 self.name.setObjectName("name1")
                 self.name.adjustSize()
-                self.name.setGeometry(QtCore.QRect(40, 110 * i + 155 - self.name.width()//2, 0, 0))
+                self.name.setGeometry(QtCore.QRect(40, 110 * i + 155 - self.name.width() // 2, 0, 0))
                 self.name.adjustSize()
             if championsurl2[i] != "BOT":
                 self.kda = QtWidgets.QLabel(self.centralwidget)
@@ -470,7 +583,7 @@ class Ui_LiveMatchWindow(object):
                 self.kda.setFont(font)
                 self.kda.setObjectName("kda2")
                 self.kda.adjustSize()
-                self.kda.setGeometry(QtCore.QRect(800, 110*i + 120, 0, 0))
+                self.kda.setGeometry(QtCore.QRect(800, 110 * i + 120, 0, 0))
                 self.kda.adjustSize()
                 self.df = QtWidgets.QLabel(self.centralwidget)
                 self.df.setStyleSheet("color: #cccccc;")
@@ -481,18 +594,18 @@ class Ui_LiveMatchWindow(object):
                 self.df.setFont(font)
                 self.df.setObjectName("df6")
                 self.df.adjustSize()
-                self.df.setGeometry(QtCore.QRect(800, 110*i + 120 + self.kda.height(), 0, 0))
+                self.df.setGeometry(QtCore.QRect(800, 110 * i + 120 + self.kda.height(), 0, 0))
                 self.df.adjustSize()
                 self.winrate = QtWidgets.QLabel(self.centralwidget)
                 self.winrate.setStyleSheet("color: #cccccc;")
-                self.winrate.setText(str(winrates2[i]))
+                self.winrate.setText(str(winrates2text[i]))
                 font = QtGui.QFont()
                 font.setFamily("Tw Cen MT")
                 font.setPointSize(14)
                 self.winrate.setFont(font)
                 self.winrate.setObjectName("winrate2")
                 self.winrate.adjustSize()
-                self.winrate.setGeometry(QtCore.QRect(890, 110*i + 155 - (self.winrate.height() // 2), 0, 0))
+                self.winrate.setGeometry(QtCore.QRect(890, 110 * i + 155 - (self.winrate.height() // 2), 0, 0))
                 self.winrate.adjustSize()
                 self.acclvl = QtWidgets.QLabel(self.centralwidget)
                 self.acclvl.setStyleSheet("color: #cccccc;")
@@ -503,7 +616,7 @@ class Ui_LiveMatchWindow(object):
                 self.acclvl.setFont(font)
                 self.acclvl.setObjectName("acclvl2")
                 self.acclvl.adjustSize()
-                self.acclvl.setGeometry(QtCore.QRect(1010, 110*i + 120, 0, 0))
+                self.acclvl.setGeometry(QtCore.QRect(1010, 110 * i + 120, 0, 0))
                 self.acclvl.adjustSize()
                 self.masterlvl = QtWidgets.QLabel(self.centralwidget)
                 self.masterlvl.setStyleSheet("color: #cccccc;")
@@ -514,7 +627,7 @@ class Ui_LiveMatchWindow(object):
                 self.masterlvl.setFont(font)
                 self.masterlvl.setObjectName("masterlvl2")
                 self.masterlvl.adjustSize()
-                self.masterlvl.setGeometry(QtCore.QRect(1010, 110*i + 120 + self.acclvl.height(), 0, 0))
+                self.masterlvl.setGeometry(QtCore.QRect(1010, 110 * i + 120 + self.acclvl.height(), 0, 0))
                 self.masterlvl.adjustSize()
                 self.name = QtWidgets.QLabel(self.centralwidget)
                 self.name.setStyleSheet("color: #cccccc;")
@@ -525,7 +638,7 @@ class Ui_LiveMatchWindow(object):
                 self.name.setFont(font)
                 self.name.setObjectName("name2")
                 self.name.adjustSize()
-                self.name.setGeometry(QtCore.QRect(680, 110*i + 190, 0, 0))
+                self.name.setGeometry(QtCore.QRect(680, 110 * i + 190, 0, 0))
                 self.name.adjustSize()
             else:
                 self.name = QtWidgets.QLabel(self.centralwidget)
@@ -537,7 +650,7 @@ class Ui_LiveMatchWindow(object):
                 self.name.setFont(font)
                 self.name.setObjectName("name2")
                 self.name.adjustSize()
-                self.name.setGeometry(QtCore.QRect(680, 110 * i + 155 - self.name.width()//2, 0, 0))
+                self.name.setGeometry(QtCore.QRect(680, 110 * i + 155 - self.name.width() // 2, 0, 0))
                 self.name.adjustSize()
 
     def set_images(self):
@@ -563,7 +676,7 @@ class Ui_LiveMatchWindow(object):
                     self.champ.setText("New")
                     self.champ.adjustSize()
                 self.rank = QtWidgets.QLabel(self.centralwidget)
-                self.rank.setGeometry(QtCore.QRect(500, 110*i + 155 - self.champ.width()//2, 70, 70))
+                self.rank.setGeometry(QtCore.QRect(500, 110 * i + 155 - self.champ.width() // 2, 70, 70))
                 self.rank.setObjectName("rank1")
                 self.rank.setPixmap(QtGui.QPixmap(str(os.getcwd()) + "/img/rank/" + ranks1[i] + ".png"))
                 self.rank.setScaledContents(True)
@@ -643,14 +756,16 @@ class Ui_LiveMatchWindow(object):
     def reset_data(self):
         global name, status, map_name, queue_name, championsurl1, ranks1, kdas1, df1, winrates1, champlvl1, playerlvl1
         global names1, championsurl2, ranks2, kdas2, df2, winrates2, champlvl2, playerlvl2, names2
+        global awinrates1, awinrates2, winrates1text, winrates2text
         status = ""
         map_name = ""
         queue_name = ""
         championsurl1 = []
         ranks1 = []
-        kdas1 = []
         df1 = []
         winrates1 = []
+        winrates1text = []
+        awinrates1 = []
         champlvl1 = []
         playerlvl1 = []
         names1 = []
@@ -659,6 +774,8 @@ class Ui_LiveMatchWindow(object):
         kdas2 = []
         df2 = []
         winrates2 = []
+        winrates2text = []
+        awinrates2 = []
         champlvl2 = []
         playerlvl2 = []
         names2 = []

@@ -377,63 +377,9 @@ class Ui_LiveMatchWindow(object):
             self.set_images()
             # display data found
             self.set_data(LiveMatchWindow.width())
-            self.predictmatch(LiveMatchWindow.width(), LiveMatchWindow.height())
 
         self.retranslateUi(LiveMatchWindow)
         QtCore.QMetaObject.connectSlotsByName(LiveMatchWindow)
-
-    def predictmatch(self, width, height):
-        if len(winrates1) == 5:
-            sumwin1 = 0
-            den1 = 0
-            sumwin2 = 0
-            den2 = 0
-            sumkda1 = 0
-            den3 = 0
-            sumkda2 = 0
-            den4 = 0
-            sumdf1 = 0
-            den5 = 0
-            sumdf2 = 0
-            den6 = 0
-            for i in range(len(winrates1)):
-                if winrates1[i] != "N/A" and not math.isnan(float(winrates1[i])):
-                    sumwin1 += winrates1[i]
-                    den1 += 1
-                if winrates2[i] != "N/A" and not math.isnan(float(winrates2[i])):
-                    sumwin2 += winrates2[i]
-                    den2 += 1
-                if kdas1[i] != "N/A":
-                    sumkda1 += kdas1[i]
-                    den3 += 1
-                if kdas2[i] != "N/A":
-                    sumkda2 += kdas2[i]
-                    den4 += 1
-                if df1[i] != "N/A":
-                    sumdf1 += df1[i]
-                    den5 += 1
-                if df2[i] != "N/A":
-                    sumdf2 += df2[i]
-                    den6 += 1
-            windif = sumwin1 / den1 - sumwin2 / den2
-            kdadif = sumkda1 / den3 - sumkda2 / den4
-            dfdif = sumdf1 / den5 - sumdf2 / den6
-            # create an label to notify user
-            self.predict = QtWidgets.QLabel(self.centralwidget)
-            # set style
-            self.predict.setStyleSheet("color: #cccccc;")
-            # set font
-            font = QtGui.QFont()
-            font.setFamily("Tw Cen MT Condensed Extra Bold")
-            font.setPointSize(24)
-            self.predict.setFont(font)
-            # set object name
-            self.predict.setObjectName("predict")
-            # display username and players status
-            self.predict.setText(str(model.predict_proba([[windif, kdadif, dfdif]])))
-            # adjust size
-            self.predict.adjustSize()
-            self.predict.move((width - self.predict.width()) // 2, height - (self.predict.height() + 20))
 
     def set_data(self, width):
         self.match = QtWidgets.QLabel(self.centralwidget)

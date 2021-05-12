@@ -36,7 +36,6 @@ kdas1 = []
 df1 = []
 winrates1 = []
 winrates1text = []
-awinrates1 = []
 champlvl1 = []
 playerlvl1 = []
 names1 = []
@@ -47,7 +46,6 @@ kdas2 = []
 df2 = []
 winrates2 = []
 winrates2text = []
-awinrates2 = []
 champlvl2 = []
 playerlvl2 = []
 names2 = []
@@ -139,14 +137,6 @@ async def live_match(n):
                 # add error message to the df list
                 winrates1.append("N/A")
                 winrates1text.append("N/A")
-            try:
-                if queue_name == "Casual Siege":
-                    awinrates1.append(p.casual.winrate)
-                elif queue_name == "Competitive Keyboard":
-                    awinrates1.append(p.ranked_keyboard.winrate)
-            except AttributeError:
-                # add error message to the df list
-                awinrates1.append("N/A")
         else:
             # if name doesn't exit add name as an error
             names1.append("N/A")
@@ -159,14 +149,6 @@ async def live_match(n):
             # same with winrate
             winrates1.append(team1[i].winrate)
             winrates1text.append(team1[i].winrate_text)
-            try:
-                if queue_name == "Casual Siege":
-                    awinrates1.append(p.casual.winrate)
-                elif queue_name == "Competitive Keyboard":
-                    awinrates1.append(p.ranked_keyboard.winrate)
-            except AttributeError:
-                # add error message to the df list
-                awinrates1.append("N/A")
     # same thing for team 2 members
     for i in range(0, len(team2), 1):
         championsurl2.append(team2[i].champion.icon_url)
@@ -194,14 +176,6 @@ async def live_match(n):
             except AttributeError:
                 winrates2.append("N/A")
                 winrates2text.append("N/A")
-            try:
-                if queue_name == "Casual Siege":
-                    awinrates2.append(p.casual.winrate)
-                elif queue_name == "Competitive Keyboard":
-                    awinrates2.append(p.ranked_keyboard.winrate)
-            except AttributeError:
-                # add error message to the df list
-                awinrates2.append("N/A")
         else:
             names2.append("N/A")
             ranks2.append(team2[i].rank.name)
@@ -209,14 +183,6 @@ async def live_match(n):
             df2.append("N/A")
             winrates2.append(team2[i].winrate)
             winrates2text.append(team2[i].winrate_text)
-            try:
-                if queue_name == "Casual Siege":
-                    awinrates2.append(p.casual.winrate)
-                elif queue_name == "Competitive Keyboard":
-                    awinrates2.append(p.ranked_keyboard.winrate)
-            except AttributeError:
-                # add error message to the df list
-                awinrates2.append("N/A")
     # if team members are less than 55
     if len(team1) < 5:
         # then for each missing member (bot)
@@ -430,10 +396,6 @@ class Ui_LiveMatchWindow(object):
             den5 = 0
             sumdf2 = 0
             den6 = 0
-            sumawin1 = 0
-            den7 = 0
-            sumawin2 = 0
-            den8 = 0
             for i in range(len(winrates1)):
                 if winrates1[i] != "N/A" and not math.isnan(float(winrates1[i])):
                     sumwin1 += winrates1[i]
@@ -453,16 +415,9 @@ class Ui_LiveMatchWindow(object):
                 if df2[i] != "N/A":
                     sumdf2 += df2[i]
                     den6 += 1
-                if awinrates1[i] != "N/A" and not math.isnan(float(awinrates1[i])):
-                    sumawin1 += awinrates1[i]
-                    den7 += 1
-                if awinrates2[i] != "N/A" and not math.isnan(float(awinrates2[i])):
-                    sumawin2 += awinrates2[i]
-                    den8 += 1
             windif = sumwin1 / den1 - sumwin2 / den2
             kdadif = sumkda1 / den3 - sumkda2 / den4
             dfdif = sumdf1 / den5 - sumdf2 / den6
-            awindif = sumawin1 / den7 - sumawin2 / den8
             # create an label to notify user
             self.predict = QtWidgets.QLabel(self.centralwidget)
             # set style
@@ -475,7 +430,7 @@ class Ui_LiveMatchWindow(object):
             # set object name
             self.predict.setObjectName("predict")
             # display username and players status
-            self.predict.setText(str(model.predict_proba([[windif, kdadif, dfdif, awindif]])))
+            self.predict.setText(str(model.predict_proba([[windif, kdadif, dfdif]])))
             # adjust size
             self.predict.adjustSize()
             self.predict.move((width - self.predict.width()) // 2, height - (self.predict.height() + 20))
@@ -756,7 +711,7 @@ class Ui_LiveMatchWindow(object):
     def reset_data(self):
         global name, status, map_name, queue_name, championsurl1, ranks1, kdas1, df1, winrates1, champlvl1, playerlvl1
         global names1, championsurl2, ranks2, kdas2, df2, winrates2, champlvl2, playerlvl2, names2
-        global awinrates1, awinrates2, winrates1text, winrates2text
+        global winrates1text, winrates2text
         status = ""
         map_name = ""
         queue_name = ""
@@ -765,7 +720,6 @@ class Ui_LiveMatchWindow(object):
         df1 = []
         winrates1 = []
         winrates1text = []
-        awinrates1 = []
         champlvl1 = []
         playerlvl1 = []
         names1 = []
@@ -775,7 +729,6 @@ class Ui_LiveMatchWindow(object):
         df2 = []
         winrates2 = []
         winrates2text = []
-        awinrates2 = []
         champlvl2 = []
         playerlvl2 = []
         names2 = []

@@ -19,7 +19,7 @@ import traceback
 import pickle
 
 if not os.path.isfile("dev_auth.dat") and not os.path.isfile("default.dat"):
-    dev_auth = [0, "string"]  # Developer ID and Auth Key
+    dev_auth = [0, ""]  # Developer ID and Auth Key
     pickle.dump(dev_auth, open("default.dat", "wb"))
 
 elif os.path.isfile("dev_auth.dat"):

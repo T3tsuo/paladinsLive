@@ -216,7 +216,7 @@ class Ui_MainWindow(object):
             font.setPointSize(12)
             self.info1.setFont(font)
             self.info1.setObjectName("info1")
-            self.info1.setText("Dev ID: " + str(dev_auth[0]) + "    Auth Key: " + dev_auth[1]);
+            self.info1.setText("Dev ID: " + str(dev_auth[0]) + "    Auth Key: " + dev_auth[1])
             self.info1.adjustSize()
             self.info1.move((MainWindow.width() - self.info1.width()) // 2, 412)
 
@@ -301,7 +301,7 @@ class Ui_MainWindow(object):
             font.setFamily("Tw Cen MT Condensed Extra Bold")
             font.setPointSize(12)
             self.info1.setFont(font)
-            self.info1.setText("Dev ID: " + str(dev_auth[0]) + "    Auth Key: " + dev_auth[1]);
+            self.info1.setText("Dev ID: " + str(dev_auth[0]) + "    Auth Key: " + dev_auth[1])
             self.info1.adjustSize()
             self.info1.move((width - self.info1.width()) // 2, 412)
             self.reset.show()

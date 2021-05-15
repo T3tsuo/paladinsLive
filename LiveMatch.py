@@ -143,7 +143,10 @@ async def live_match(n):
             # if name doesn't exit add name as an error
             names1.append("N/A")
             # append their "rank"
-            ranks1.append(team1[i].rank.name)
+            try:
+                ranks1.append(team1[i].rank.name)
+            except Exception:
+                ranks1.append("Qualifying")
             # append error as kda
             kdas1.append("N/A")
             # same with df
@@ -180,7 +183,10 @@ async def live_match(n):
                 winrates2text.append("N/A")
         else:
             names2.append("N/A")
-            ranks2.append(team2[i].rank.name)
+            try:
+                ranks2.append(team2[i].rank.name)
+            except Exception:
+                ranks2.append("Qualifying")
             kdas2.append("N/A")
             df2.append("N/A")
             winrates2.append(team2[i].winrate)

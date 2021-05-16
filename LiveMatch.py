@@ -460,6 +460,17 @@ class Ui_LiveMatchWindow(object):
             self.team2.adjustSize()
             self.team2.move(self.progressBar.x() + self.team2.width() + 195,
                             self.progressBar.y() - self.progressBar.height() // 4)
+            self.info = QtWidgets.QLabel(self.centralwidget)
+            self.info.setStyleSheet("color: #cccccc;")
+            font = QtGui.QFont()
+            font.setFamily("Tw Cen MT Condensed Extra Bold")
+            font.setPointSize(12)
+            self.info.setFont(font)
+            self.info.setObjectName("team1 winrate")
+            self.info.setText("*This estimator does not take into acc the players' "
+                              "lvl\n nor champion/role, only the players performance")
+            self.info.adjustSize()
+            self.info.move(self.team2.x() + self.team2.width() + 10, self.team2.y() - self.team2.height() // 3)
 
     def set_data(self, width):
         self.match = QtWidgets.QLabel(self.centralwidget)

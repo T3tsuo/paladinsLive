@@ -460,7 +460,6 @@ class Ui_LiveMatchWindow(object):
             self.team2.adjustSize()
             self.team2.move(self.progressBar.x() + self.team2.width() + 195,
                             self.progressBar.y() - self.progressBar.height() // 4)
-            print(prediction)
 
     def set_data(self, width):
         self.match = QtWidgets.QLabel(self.centralwidget)

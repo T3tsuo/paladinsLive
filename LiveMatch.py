@@ -458,7 +458,7 @@ class Ui_LiveMatchWindow(object):
             self.team2.setObjectName("team2 winrate")
             self.team2.setText(str(round(prediction[0][1] * 100)) + "%")
             self.team2.adjustSize()
-            self.team2.move(self.progressBar.x() + self.team2.width() + 195,
+            self.team2.move(self.progressBar.x() + int(self.progressBar.width() * 0.87),
                             self.progressBar.y() - self.progressBar.height() // 4)
             self.info = QtWidgets.QLabel(self.centralwidget)
             self.info.setStyleSheet("color: #cccccc;")

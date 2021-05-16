@@ -435,7 +435,7 @@ class Ui_LiveMatchWindow(object):
             self.progressBar = QtWidgets.QProgressBar(self.centralwidget)
             self.progressBar.setFixedSize(281, 31)
             self.progressBar.setObjectName("Overall Winrate")
-            self.progressBar.setProperty("value", int(prediction[0][0] * 100))
+            self.progressBar.setProperty("value", round(prediction[0][0] * 100))
             self.progressBar.move((width - self.progressBar.width()) // 2,
                                   height - (self.progressBar.height() + 20))
             self.team1 = QtWidgets.QLabel(self.centralwidget)
@@ -445,7 +445,7 @@ class Ui_LiveMatchWindow(object):
             font.setPointSize(16)
             self.team1.setFont(font)
             self.team1.setObjectName("team1 winrate")
-            self.team1.setText(str(int(prediction[0][0] * 100)) + "%")
+            self.team1.setText(str(round(prediction[0][0] * 100)) + "%")
             self.team1.adjustSize()
             self.team1.move(self.progressBar.x() - self.team1.width() - 2,
                             self.progressBar.y() - self.progressBar.height() // 4)
@@ -456,7 +456,7 @@ class Ui_LiveMatchWindow(object):
             font.setPointSize(16)
             self.team2.setFont(font)
             self.team2.setObjectName("team2 winrate")
-            self.team2.setText(str(int(prediction[0][1] * 100)) + "%")
+            self.team2.setText(str(round(prediction[0][1] * 100)) + "%")
             self.team2.adjustSize()
             self.team2.move(self.progressBar.x() + self.team2.width() + 195,
                             self.progressBar.y() - self.progressBar.height() // 4)

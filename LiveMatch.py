@@ -470,7 +470,8 @@ class Ui_LiveMatchWindow(object):
             self.info.setText("*This estimator does not take into acc the players' "
                               "lvl\n nor champion/role, only the players performance")
             self.info.adjustSize()
-            self.info.move(self.team2.x() + self.team2.width() + 10, self.team2.y() - self.team2.height() // 3)
+            self.info.move(self.team2.x() + self.team2.width() + (width - self.info.width() - self.team2.x() - self.team2.width()) // 2,
+                           self.team2.y() - self.team2.height() // 3)
 
     def set_data(self, width):
         self.match = QtWidgets.QLabel(self.centralwidget)

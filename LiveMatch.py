@@ -427,25 +427,40 @@ class Ui_LiveMatchWindow(object):
             windif = sumwin1 / den1 - sumwin2 / den2
             kdadif = sumkda1 / den3 - sumkda2 / den4
             dfdif = sumdf1 / den5 - sumdf2 / den6
-            # create an label to notify user
-            self.predict = QtWidgets.QLabel(self.centralwidget)
-            # set style
-            self.predict.setStyleSheet("color: #cccccc;")
-            # set font
+            if queue_name == "Casual Siege":
+                prediction = model_casual.predict_proba([[windif, kdadif, dfdif]])
+            else:
+                prediction = model_casual.predict_proba([[windif, kdadif, dfdif]])
+            # create an bar to tell users
+            self.progressBar = QtWidgets.QProgressBar(self.centralwidget)
+            self.progressBar.setFixedSize(281, 31)
+            self.progressBar.setObjectName("Overall Winrate")
+            self.progressBar.setProperty("value", int(prediction[0][0] * 100))
+            self.progressBar.move((width - self.progressBar.width()) // 2,
+                                  height - (self.progressBar.height() + 20))
+            self.team1 = QtWidgets.QLabel(self.centralwidget)
+            self.team1.setStyleSheet("color: #cccccc;")
             font = QtGui.QFont()
             font.setFamily("Tw Cen MT Condensed Extra Bold")
-            font.setPointSize(24)
-            self.predict.setFont(font)
-            # set object name
-            self.predict.setObjectName("predict")
-            # display username and players status
-            if queue_name == "Casual Siege":
-                self.predict.setText(str(model_casual.predict_proba([[windif, kdadif, dfdif]])))
-            else:
-                self.predict.setText(str(model_casual.predict_proba([[windif, kdadif, dfdif]])))
-            # adjust size
-            self.predict.adjustSize()
-            self.predict.move((width - self.predict.width()) // 2, height - (self.predict.height() + 20))
+            font.setPointSize(16)
+            self.team1.setFont(font)
+            self.team1.setObjectName("team1 winrate")
+            self.team1.setText(str(int(prediction[0][0] * 100)) + "%")
+            self.team1.adjustSize()
+            self.team1.move(self.progressBar.x() - self.team1.width() - 2,
+                            self.progressBar.y() - self.progressBar.height() // 4)
+            self.team2 = QtWidgets.QLabel(self.centralwidget)
+            self.team2.setStyleSheet("color: #cccccc;")
+            font = QtGui.QFont()
+            font.setFamily("Tw Cen MT Condensed Extra Bold")
+            font.setPointSize(16)
+            self.team2.setFont(font)
+            self.team2.setObjectName("team2 winrate")
+            self.team2.setText(str(int(prediction[0][1] * 100)) + "%")
+            self.team2.adjustSize()
+            self.team2.move(self.progressBar.x() + self.team2.width() + 195,
+                            self.progressBar.y() - self.progressBar.height() // 4)
+            print(prediction)
 
     def set_data(self, width):
         self.match = QtWidgets.QLabel(self.centralwidget)

@@ -112,10 +112,9 @@ async def live_match(n):
             p = await api.get_player(id)
             # get their keyboard rank
             ranks1.append(p.ranked_keyboard.rank.name)
-            # get every champion stats on the account
-            champion_stats = await p.get_champion_stats()
-            # find the specific champion they are playing this match
-            champions_stat = await get_champion(champion_stats, team1[i].champion.name)
+            # get the specific champions' stats they are playing this match
+            champions_stat = arez.utils.get(await match.team1[i].player.get_champion_stats(),
+                                            champion__name=match.team1[i].champion.name)
             # find the champions kda and add it to the team kda list
             try:
                 kdas1.append(int(champions_stat.kda2 * 100) / 100)
@@ -165,8 +164,8 @@ async def live_match(n):
             id = team2[i].player.id
             p = await api.get_player(id)
             ranks2.append(p.ranked_keyboard.rank.name)
-            champion_stats = await p.get_champion_stats()
-            champions_stat = await get_champion(champion_stats, team2[i].champion.name)
+            champions_stat = arez.utils.get(await match.team2[i].player.get_champion_stats(),
+                                            champion__name=match.team2[i].champion.name)
             try:
                 kdas2.append(int(champions_stat.kda2 * 100) / 100)
             except AttributeError:
@@ -204,15 +203,6 @@ async def live_match(n):
     # close the api
     await api.close()
     return True
-
-
-async def get_champion(list, name):
-    # for each champion in the list
-    for i in range(0, len(list), 1):
-        # if the champion name is equal to the champion name currently being played
-        if list[i].champion.name == name:
-            # return the champion object being player
-            return list[i]
 
 
 class Ui_LiveMatchWindow(object):

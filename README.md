@@ -10,7 +10,7 @@ Type in a player's username and make sure to hit enter for the program to check 
 "Continue" button. If the player is currently in a match then hit the "Live
 Match" button for the program to attempt to view both teams player stats of the current match.
 
-### FriendsList (Beta):
+### FriendsList:
 It will load your friendslist. It show you their current avatar, name, status, rank, last login and creation date of their account.  
 WARNING: the more friends you have the longer it will take to load the friendslist. (50 friends is a good amount, this is due to the lack of threading which will be implemented)
 
@@ -48,9 +48,3 @@ If you enter incorrect dev_id and auth_key then every player name will be invali
 
 If the default id and auth key is not working and your personal one isn't working as well, then there could be maintenance on Hi-Rez's end.
 http://status.hirezstudios.com/
-
-## Pyinstaller issues:
-I am using pyinstaller to compile my python files to an executable, and for some reason with pyinstaller it sometimes gets detected as a trojan and I am trying to figure out why. But it is a false positive and there should be nothing to worry about.
-
-Example of false positive with antivirus detectors:  
-https://stackoverflow.com/questions/43777106/program-made-with-pyinstaller-now-seen-as-a-trojan-horse-by-avg

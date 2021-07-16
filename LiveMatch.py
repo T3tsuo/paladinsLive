@@ -56,22 +56,28 @@ credits2 = []
 
 async def live_match(n):
     global status, map_name, queue_name, match_name
-    # create an API instance
-    api = arez.PaladinsAPI(dev_auth[0], dev_auth[1])
-    # fetch Player stats
-    player = await api.get_player(n)
-    # gets player status, and reformat to only display status and not the IGN
-    status = (await player.get_status()).status.name
-    # if the player is not in a match
-    if status != "In Match":
-        # then close api
-        await api.close()
-        # return that it isn't in match
-        return False
-    # if in match then get status
-    status1 = await player.get_status()
-    # and get live match info
-    match = await status1.get_live_match()
+    # while program might break from HTTP Exception
+    while True:
+        try:
+            # create an API instance
+            api = arez.PaladinsAPI(dev_auth[0], dev_auth[1])
+            # fetch Player stats
+            player = await api.get_player(n)
+            # gets player status, and reformat to only display status and not the IGN
+            status = (await player.get_status()).status.name
+            # if the player is not in a match
+            if status != "In Match":
+                # then close api
+                await api.close()
+                # return that it isn't in match
+                return False
+            # if in match then get status
+            status1 = await player.get_status()
+            # and get live match info
+            match = await status1.get_live_match()
+            break
+        except arez.ArezException:
+            pass
     # get match name
     try:
         map_name = match.map_name

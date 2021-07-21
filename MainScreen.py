@@ -33,13 +33,14 @@ name = ""
 status = ""
 avatar_url = ""
 rank = ""
+acclvl = ""
 lastlogin1 = ""
 
 width = 0
 
 
 async def main(n):
-    global name, avatar_url, status, rank, lastlogin1
+    global name, avatar_url, status, rank, lastlogin1, acclvl
     # create an API instance
     api = arez.PaladinsAPI(dev_auth[0], dev_auth[1])
     try:
@@ -65,6 +66,8 @@ async def main(n):
     avatar_url = player.avatar_url
     # and rank
     rank = player.ranked_keyboard.rank.name
+    # account level
+    acclvl = player.level
     # last login
     now = datetime.now()
     time = now.time()
@@ -234,6 +237,7 @@ class Ui_MainWindow(object):
 
         self.avatar = QtWidgets.QLabel(self.centralwidget)
         self.rank = QtWidgets.QLabel(self.centralwidget)
+        self.acclvl = QtWidgets.QLabel(self.centralwidget)
         self.lastlogin = QtWidgets.QLabel(self.centralwidget)
 
         self.username.returnPressed.connect(self.processUsername)
@@ -271,7 +275,7 @@ class Ui_MainWindow(object):
             self.reset.hide()
 
     def processUsername(self):
-        global name, dev_auth, width, status, avatar_url, lastlogin1
+        global name, dev_auth, width, status, avatar_url, lastlogin1, acclvl
         # disconnect openWindow function everytime while cheking for a new player
         try:
             self.proceed.clicked.disconnect(self.openWindow)
@@ -358,7 +362,15 @@ class Ui_MainWindow(object):
             self.rank.setObjectName("rank1")
             self.rank.setPixmap(QtGui.QPixmap(str(os.getcwd()) + "/img/rank/" + rank + ".png"))
             self.rank.setScaledContents(True)
-            self.lastlogin.setStyleSheet("color: #cccccc;")
+            self.acclvl.setText("lvl: " + str(acclvl))
+            self.acclvl.setStyleSheet("color: #cccccc;")
+            font = QtGui.QFont()
+            font.setFamily("Tw Cen MT Condensed Extra Bold")
+            font.setPointSize(18)
+            self.acclvl.setFont(font)
+            self.acclvl.setObjectName("acclvl")
+            self.acclvl.adjustSize()
+            self.acclvl.move(self.label.x() + self.label.width() + 5, self.label.y() - 5 + 70)
             font = QtGui.QFont()
             font.setFamily("Tw Cen MT Condensed Extra Bold")
             font.setPointSize(20)

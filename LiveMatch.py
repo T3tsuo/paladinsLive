@@ -50,9 +50,6 @@ champlvl2 = []
 playerlvl2 = []
 names2 = []
 
-credits1 = []
-credits2 = []
-
 
 async def live_match(n):
     global status, map_name, queue_name, match_name
@@ -110,12 +107,12 @@ async def live_match(n):
         id = team1[i].player.name
         # if it does exit
         if id != "":
-            # add their name to the team name list
-            names1.append(id)
-            # get the acc # of the player
-            id = team1[i].player.id
-            # use the # to access the full player stats
-            p = await api.get_player(id)
+            # get the player id number
+            num = team1[i].player.id
+            # get its full player object
+            p = await api.get_player(num)
+            # grab the name with the platform they play on
+            names1.append(id + ":   " + p.platform.name)
             # get their keyboard rank
             ranks1.append(p.ranked_keyboard.rank.name)
             # get the specific champions' stats they are playing this match
@@ -166,9 +163,9 @@ async def live_match(n):
         playerlvl2.append(team2[i].account_level)
         id = team2[i].player.name
         if id != "":
-            names2.append(id)
-            id = team2[i].player.id
-            p = await api.get_player(id)
+            num = team2[i].player.id
+            p = await api.get_player(num)
+            names2.append(id + ":   " + p.platform.name)
             ranks2.append(p.ranked_keyboard.rank.name)
             champions_stat = arez.utils.get(await match.team2[i].player.get_champion_stats(),
                                             champion__name=match.team2[i].champion.name)

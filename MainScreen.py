@@ -380,7 +380,6 @@ class Ui_MainWindow(object):
                 self.lastlogin.setFont(font)
                 self.lastlogin.setObjectName("lastlogin")
                 self.lastlogin.setText(lastlogin1)
-                print("hey")
                 self.lastlogin.adjustSize()
                 self.lastlogin.move((width - self.lastlogin.width()) // 2, 200)
                 self.lastlogin.show()

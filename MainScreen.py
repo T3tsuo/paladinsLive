@@ -328,6 +328,7 @@ class Ui_MainWindow(object):
             self.label.adjustSize()
             self.avatar.hide()
             self.rank.hide()
+            self.acclvl.hide()
             self.lastlogin.hide()
             # set button text to quit
             self.proceed.setText("Quit?")
@@ -371,6 +372,7 @@ class Ui_MainWindow(object):
             self.acclvl.setObjectName("acclvl")
             self.acclvl.adjustSize()
             self.acclvl.move(self.label.x() + self.label.width() + 40 - self.acclvl.width()//2, self.label.y() - 5 + 70)
+            self.acclvl.show()
             self.lastlogin.setStyleSheet("color: #cccccc;")
             font = QtGui.QFont()
             font.setFamily("Tw Cen MT Condensed Extra Bold")

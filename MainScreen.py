@@ -13,6 +13,8 @@ import arez
 import os
 import urllib.request
 from datetime import datetime, date
+from bs4 import BeautifulSoup
+import requests
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 import traceback
@@ -65,7 +67,7 @@ async def main(n):
     # and avatar url
     avatar_url = player.avatar_url
     # and rank
-    rank = player.ranked_keyboard.rank.name
+    rank = player.ranked_keyboard.rank.alt_name
     # account level
     acclvl = player.level
     # last login
@@ -275,7 +277,7 @@ class Ui_MainWindow(object):
             self.reset.hide()
 
     def processUsername(self):
-        global name, dev_auth, width, status, avatar_url, lastlogin1, acclvl
+        global name, dev_auth, width, status, avatar_url, lastlogin1, acclvl, rank
         # disconnect openWindow function everytime while cheking for a new player
         try:
             self.proceed.clicked.disconnect(self.openWindow)
@@ -358,10 +360,18 @@ class Ui_MainWindow(object):
                 self.avatar.setText("New")
                 self.avatar.adjustSize()
             self.avatar.move(self.label.x() - 20 - self.avatar.width(), self.label.y() - 10)
+            # rank format in url
+            rankSplit = rank.split(" ")
+            if len(rankSplit) == 2:
+                rank = rankSplit[0] + "_" + rankSplit[1]
+            # find the icon url
+            url = self.findRankUrl(rank)
+            image = QtGui.QImage()
+            image.loadFromData(urllib.request.urlopen(url).read())
             self.rank.show()
             self.rank.setGeometry(QtCore.QRect(self.label.x() + self.label.width() + 5, self.label.y() - 5, 70, 70))
             self.rank.setObjectName("rank1")
-            self.rank.setPixmap(QtGui.QPixmap(str(os.getcwd()) + "/img/rank/" + rank + ".png"))
+            self.rank.setPixmap(QtGui.QPixmap(image))
             self.rank.setScaledContents(True)
             self.acclvl.setText("lvl: " + str(acclvl))
             self.acclvl.setStyleSheet("color: #cccccc;")
@@ -389,6 +399,26 @@ class Ui_MainWindow(object):
             self.proceed.setText("Continue?")
             # connect to openWindow
             self.proceed.clicked.connect(self.openWindow)
+
+    def findRankUrl(self, rank_name):
+        # this webpage has all the icons for all the ranks
+        page = requests.get("https://paladins.fandom.com/wiki/Category:Ranked_icons")
+
+        # read html
+        soup = BeautifulSoup(page.content, "html.parser")
+
+        # for every a tag (href) with the cla
+        for a in soup.findAll('a', class_="image", href=True):
+            # if the players rank is in the tag and make sure it's not a rank border but an icon
+            if rank_name in str(a) and "RankIcon" in str(a):
+                # then isolate the url by quotations
+                urlFind = str(a).split('"')
+                # now the isolated url is in a list of chunks of the tag
+                for string in urlFind:
+                    # if the chunk of the tag contains the rank name
+                    if rank_name in string:
+                        # then that is the icon url for the players rank
+                        return string
 
     def openWindow(self):
         global name, dev_auth, logfile, title

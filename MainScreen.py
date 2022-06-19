@@ -13,8 +13,7 @@ import arez
 import os
 import urllib.request
 from datetime import datetime, date
-from bs4 import BeautifulSoup
-import requests
+import FindRank
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 import traceback
@@ -364,15 +363,30 @@ class Ui_MainWindow(object):
             rankSplit = rank.split(" ")
             if len(rankSplit) == 2:
                 rank = rankSplit[0] + "_" + rankSplit[1]
-            # find the icon url
-            url = self.findRankUrl(rank)
-            image = QtGui.QImage()
-            image.loadFromData(urllib.request.urlopen(url).read())
-            self.rank.show()
-            self.rank.setGeometry(QtCore.QRect(self.label.x() + self.label.width() + 5, self.label.y() - 5, 70, 70))
-            self.rank.setObjectName("rank1")
-            self.rank.setPixmap(QtGui.QPixmap(image))
-            self.rank.setScaledContents(True)
+            try:
+                # find the icon url by running a simple function in the FindRank.py file
+                url = FindRank.url(rank)
+                image = QtGui.QImage()
+                image.loadFromData(urllib.request.urlopen(url).read())
+                self.rank.show()
+                self.rank.setGeometry(QtCore.QRect(self.label.x() + self.label.width() + 5, self.label.y() - 5, 70, 70))
+                self.rank.setObjectName("rank1")
+                self.rank.setPixmap(QtGui.QPixmap(image))
+                self.rank.setScaledContents(True)
+            except:
+                count = 0
+                for number in rankSplit[1]:
+                    count += int(number)
+                rank = rankSplit[0] + "_" + str(count)
+                # find the icon url by running a simple function in the FindRank.py file
+                url = FindRank.url(rank)
+                image = QtGui.QImage()
+                image.loadFromData(urllib.request.urlopen(url).read())
+                self.rank.show()
+                self.rank.setGeometry(QtCore.QRect(self.label.x() + self.label.width() + 5, self.label.y() - 5, 70, 70))
+                self.rank.setObjectName("rank1")
+                self.rank.setPixmap(QtGui.QPixmap(image))
+                self.rank.setScaledContents(True)
             self.acclvl.setText("lvl: " + str(acclvl))
             self.acclvl.setStyleSheet("color: #cccccc;")
             font = QtGui.QFont()
@@ -399,26 +413,6 @@ class Ui_MainWindow(object):
             self.proceed.setText("Continue?")
             # connect to openWindow
             self.proceed.clicked.connect(self.openWindow)
-
-    def findRankUrl(self, rank_name):
-        # this webpage has all the icons for all the ranks
-        page = requests.get("https://paladins.fandom.com/wiki/Category:Ranked_icons")
-
-        # read html
-        soup = BeautifulSoup(page.content, "html.parser")
-
-        # for every a tag (href) with the cla
-        for a in soup.findAll('a', class_="image", href=True):
-            # if the players rank is in the tag and make sure it's not a rank border but an icon
-            if rank_name in str(a) and "RankIcon" in str(a):
-                # then isolate the url by quotations
-                urlFind = str(a).split('"')
-                # now the isolated url is in a list of chunks of the tag
-                for string in urlFind:
-                    # if the chunk of the tag contains the rank name
-                    if rank_name in string:
-                        # then that is the icon url for the players rank
-                        return string
 
     def openWindow(self):
         global name, dev_auth, logfile, title

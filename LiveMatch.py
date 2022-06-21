@@ -441,7 +441,7 @@ class Ui_LiveMatchWindow(object):
             kdadif = sumkda1 / den3 - sumkda2 / den4
             dfdif = sumdf1 / den5 - sumdf2 / den6
             prediction = model_casual.predict_proba([[windif, kdadif, dfdif]])
-            # create an bar to tell users
+            # create a bar to tell users
             self.progressBar = QtWidgets.QProgressBar(self.frame)
             self.progressBar.setFixedSize(281, 31)
             self.progressBar.setObjectName("Overall Winrate")

@@ -34,6 +34,7 @@ name = ""
 status = ""
 avatar_url = ""
 rank = ""
+tp = ""
 acclvl = ""
 lastlogin1 = ""
 
@@ -41,7 +42,7 @@ width = 0
 
 
 async def main(n):
-    global name, avatar_url, status, rank, lastlogin1, acclvl
+    global name, avatar_url, status, rank, lastlogin1, acclvl, tp
     # create an API instance
     api = arez.PaladinsAPI(dev_auth[0], dev_auth[1])
     try:
@@ -67,6 +68,7 @@ async def main(n):
     avatar_url = player.avatar_url
     # and rank
     rank = player.ranked_keyboard.rank.alt_name
+    tp = player.ranked_keyboard.points
     # account level
     acclvl = player.level
     # last login
@@ -239,6 +241,7 @@ class Ui_MainWindow(object):
         self.avatar = QtWidgets.QLabel(self.centralwidget)
         self.rank = QtWidgets.QLabel(self.centralwidget)
         self.acclvl = QtWidgets.QLabel(self.centralwidget)
+        self.tp = QtWidgets.QLabel(self.centralwidget)
         self.lastlogin = QtWidgets.QLabel(self.centralwidget)
 
         self.username.returnPressed.connect(self.processUsername)
@@ -276,7 +279,7 @@ class Ui_MainWindow(object):
             self.reset.hide()
 
     def processUsername(self):
-        global name, dev_auth, width, status, avatar_url, lastlogin1, acclvl, rank
+        global name, dev_auth, width, status, avatar_url, lastlogin1, acclvl, rank, tp
         # disconnect openWindow function everytime while cheking for a new player
         try:
             self.proceed.clicked.disconnect(self.openWindow)
@@ -330,6 +333,7 @@ class Ui_MainWindow(object):
             self.avatar.hide()
             self.rank.hide()
             self.acclvl.hide()
+            self.tp.hide()
             self.lastlogin.hide()
             # set button text to quit
             self.proceed.setText("Quit?")
@@ -387,7 +391,18 @@ class Ui_MainWindow(object):
                 self.rank.setObjectName("rank1")
                 self.rank.setPixmap(QtGui.QPixmap(image))
                 self.rank.setScaledContents(True)
-            self.acclvl.setText("lvl: " + str(acclvl))
+            self.tp.setText("TP: " + str(tp))
+            self.tp.setStyleSheet("color: #cccccc;")
+            font = QtGui.QFont()
+            font.setFamily("Tw Cen MT Condensed Extra Bold")
+            font.setPointSize(18)
+            self.tp.setFont(font)
+            self.tp.setObjectName("tp")
+            self.tp.adjustSize()
+            self.tp.move(self.label.x() + self.label.width() + 40 - self.tp.width() // 2,
+                             self.label.y() - 5 + 70)
+            self.acclvl.show()
+            self.acclvl.setText("LVL: " + str(acclvl))
             self.acclvl.setStyleSheet("color: #cccccc;")
             font = QtGui.QFont()
             font.setFamily("Tw Cen MT Condensed Extra Bold")
@@ -395,7 +410,7 @@ class Ui_MainWindow(object):
             self.acclvl.setFont(font)
             self.acclvl.setObjectName("acclvl")
             self.acclvl.adjustSize()
-            self.acclvl.move(self.label.x() + self.label.width() + 40 - self.acclvl.width()//2, self.label.y() - 5 + 70)
+            self.acclvl.move(self.label.x() - 20 - self.acclvl.width(), self.label.y() - 5 + 70)
             self.acclvl.show()
             self.lastlogin.setStyleSheet("color: #cccccc;")
             font = QtGui.QFont()

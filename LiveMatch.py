@@ -35,6 +35,7 @@ queue_name = ""
 
 championsurl1 = []
 ranks1 = []
+tp1 = []
 kdas1 = []
 df1 = []
 winrates1 = []
@@ -45,6 +46,7 @@ names1 = []
 
 championsurl2 = []
 ranks2 = []
+tp2 = []
 kdas2 = []
 df2 = []
 winrates2 = []
@@ -118,6 +120,8 @@ async def live_match(n):
             names1.append(id + ":   " + p.platform.name)
             # get their keyboard rank
             ranks1.append(p.ranked_keyboard.rank.alt_name)
+            # get their tp
+            tp1.append("TP: " + str(p.ranked_keyboard.points))
             # get the specific champions' stats they are playing this match
             champions_stat = arez.utils.get(await match.team1[i].player.get_champion_stats(),
                                             champion__name=match.team1[i].champion.name)
@@ -147,6 +151,8 @@ async def live_match(n):
         else:
             # if name doesn't exit add name as an error
             names1.append("N/A")
+            # tp is also an error
+            tp1.append("ERROR")
             # append their "rank"
             try:
                 ranks1.append(team1[i].rank.alt_name)
@@ -170,6 +176,7 @@ async def live_match(n):
             p = await api.get_player(num)
             names2.append(id + ":   " + p.platform.name)
             ranks2.append(p.ranked_keyboard.rank.alt_name)
+            tp2.append("TP: " + str(p.ranked_keyboard.points))
             champions_stat = arez.utils.get(await match.team2[i].player.get_champion_stats(),
                                             champion__name=match.team2[i].champion.name)
             try:
@@ -188,6 +195,7 @@ async def live_match(n):
                 winrates2text.append("N/A")
         else:
             names2.append("N/A")
+            tp2.append("ERROR")
             try:
                 ranks2.append(team2[i].rank.alt_name)
             except Exception:
@@ -554,6 +562,18 @@ class Ui_LiveMatchWindow(object):
                 self.masterlvl.adjustSize()
                 self.masterlvl.setGeometry(QtCore.QRect(330, 110 * i + self.acclvl.height(), 0, 0))
                 self.masterlvl.adjustSize()
+                self.tp = QtWidgets.QLabel(self.frame)
+                self.tp.setStyleSheet("color: #cccccc;")
+                self.tp.setText(tp1[i])
+                font = QtGui.QFont()
+                font.setFamily("Tw Cen MT")
+                font.setPointSize(14)
+                self.tp.setFont(font)
+                self.tp.setObjectName("tp1")
+                self.tp.adjustSize()
+                self.tp.setGeometry(QtCore.QRect(460 + self.rank.width()//2 - self.tp.width()//2,
+                                                 110 * i + 70, 0, 0))
+                self.tp.adjustSize()
                 self.name = QtWidgets.QLabel(self.frame)
                 self.name.setStyleSheet("color: #cccccc;")
                 self.name.setText(names1[i])
@@ -633,6 +653,18 @@ class Ui_LiveMatchWindow(object):
                 self.masterlvl.adjustSize()
                 self.masterlvl.setGeometry(QtCore.QRect(970, 110 * i + self.acclvl.height(), 0, 0))
                 self.masterlvl.adjustSize()
+                self.tp = QtWidgets.QLabel(self.frame)
+                self.tp.setStyleSheet("color: #cccccc;")
+                self.tp.setText(tp2[i])
+                font = QtGui.QFont()
+                font.setFamily("Tw Cen MT")
+                font.setPointSize(14)
+                self.tp.setFont(font)
+                self.tp.setObjectName("tp2")
+                self.tp.adjustSize()
+                self.tp.setGeometry(QtCore.QRect(1100 + self.rank.width() // 2 - self.tp.width() // 2,
+                                                 110 * i + 70, 0, 0))
+                self.tp.adjustSize()
                 self.name = QtWidgets.QLabel(self.frame)
                 self.name.setStyleSheet("color: #cccccc;")
                 self.name.setText(names2[i])

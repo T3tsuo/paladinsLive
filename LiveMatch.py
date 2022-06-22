@@ -858,7 +858,7 @@ class Ui_LiveMatchWindow(object):
         names1 = []
         championsurl2 = []
         ranks2 = []
-        tp2 = p[]
+        tp2 = []
         kdas2 = []
         df2 = []
         winrates2 = []

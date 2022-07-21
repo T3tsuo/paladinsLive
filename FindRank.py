@@ -15,7 +15,7 @@ def url(rank_name):
         if rank_name in str(a) and "RankIcon" in str(a):
             # then isolate the url by quotations
             urlFind = str(a).split('"')
-            # now the isolated url is in a list of chunks of the tag
+            # now the isolated url is in a list of chunks from the tag
             for string in urlFind:
                 # if the chunk of the tag contains the rank name
                 if rank_name in string:

@@ -5,22 +5,28 @@ Application to view Live Paladins Match Statistics on both teams.
 
 ## Demo:
 Default screen when opening the app:
-![Alt text](demo_img/MainScreen_default.png)
+
+<img src="demo_img/MainScreen_default.png" alt="MainScreen_default" width="700"/>
 
 Screen after entering players' IGN:
-![Alt text](demo_img/MainScreen_player.png)
+
+<img src="demo_img/MainScreen_player.png" alt="MainScreen_player" width="700"/>
 
 Options screen when pressing the continue button:
-![Alt text](demo_img/Options.png)
+
+<img src="demo_img/Options.png" alt="Options" width="700"/>
 
 FriendsList Screen:
-![Alt text](demo_img/Friendslist.png)
+
+<img src="demo_img/Friendslist.png" alt="Friendslist" width="700"/>
 
 LiveMatch statistics screen:
-![Alt text](demo_img/LiveGame_stats.png)
+
+<img src="demo_img/LiveGame_stats.png" alt="LiveGame_stats" width="700"/>
 
 LiveMatch prediction (for casual siege and rank only):
-![Alt text](demo_img/LiveGame_prediction.png)
+
+<img src="demo_img/LiveGame_prediction.png" alt="LiveGame_prediction" width="700"/>
 
 ## How to use:
 

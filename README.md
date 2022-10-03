@@ -16,17 +16,17 @@ Options screen when pressing the continue button:
 
 <img src="demo_img/Options.png" alt="Options" width="700"/>
 
-FriendsList Screen:
-
-<img src="demo_img/Friendslist.png" alt="Friendslist" width="700"/>
-
-LiveMatch statistics screen:
+LiveMatch statistic screen:
 
 <img src="demo_img/LiveGame_stats.png" alt="LiveGame_stats" width="700"/>
 
 LiveMatch prediction (for casual siege and rank only):
 
 <img src="demo_img/LiveGame_prediction.png" alt="LiveGame_prediction" width="700"/>
+
+FriendsList Screen:
+
+<img src="demo_img/Friendslist.png" alt="Friendslist" width="700"/>
 
 ## How to use:
 

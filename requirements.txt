@@ -65,8 +65,6 @@ pyasn1-modules==0.2.8
 PyAutoGUI==0.9.53
 pycparser==2.21
 PyGetWindow==0.0.9
-pyinstaller==4.3
-pyinstaller-hooks-contrib==2021.1
 PyMsgBox==1.0.9
 pyOpenSSL==21.0.0
 pyparsing==2.4.7

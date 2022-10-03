@@ -34,6 +34,7 @@ class Ui_LiveMatchorFriendsWindow(object):
         LiveMatchorFriendsWindow.setObjectName("LiveMatchorFriendsWindow")
         LiveMatchorFriendsWindow.setFixedSize(800, 600)
         LiveMatchorFriendsWindow.setStyleSheet("background-color: black;")
+        LiveMatchorFriendsWindow.setWindowIcon(QtGui.QIcon("icon.ico"))
         self.centralwidget = QtWidgets.QWidget(LiveMatchorFriendsWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.label = QtWidgets.QLabel(self.centralwidget)

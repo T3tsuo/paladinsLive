@@ -234,6 +234,7 @@ class Ui_LiveMatchWindow(object):
         LiveMatchWindow.setObjectName("LiveMatchWindow")
         LiveMatchWindow.setFixedSize(1240, 720)
         LiveMatchWindow.setStyleSheet("background-color: black;")
+        LiveMatchWindow.setWindowIcon(QtGui.QIcon("icon.ico"))
         self.centralwidget = QtWidgets.QWidget(LiveMatchWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.backBtn = QtWidgets.QPushButton(self.centralwidget)

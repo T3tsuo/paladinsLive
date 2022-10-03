@@ -172,6 +172,7 @@ class Ui_FriendsList(object):
         FriendsList.setObjectName("FriendsList")
         FriendsList.setFixedSize(900, sizeObject.height() - 175)
         FriendsList.setStyleSheet("background-color: black;")
+        FriendsList.setWindowIcon(QtGui.QIcon("icon.ico"))
         self.centralwidget = QtWidgets.QWidget(FriendsList)
         self.centralwidget.setObjectName("centralwidget")
         self.Players = QtWidgets.QLabel(self.centralwidget)

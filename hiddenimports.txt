@@ -1,3 +1,4 @@
 sklearn
 setuptools._distutils
 sklearn.utils._weight_vector
+certifi

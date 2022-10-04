@@ -11,10 +11,24 @@ import os
 from PyQt5 import QtCore, QtGui, QtWidgets
 import traceback
 
+from PyQt5.QtCore import QUrl
+from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest
+
 dev_auth = [0, ""]  # Developer ID and Auth Key
 
 title = ""
 name = ""
+window = None
+
+
+def set_window_icon_from_response(http_response):
+    global window
+    pixmap = QPixmap()
+    pixmap.loadFromData(http_response.readAll())
+    icon = QIcon(pixmap)
+    if window is not None:
+        window.setWindowIcon(icon)
 
 
 class Ui_LiveMatchorFriendsWindow(object):
@@ -31,10 +45,15 @@ class Ui_LiveMatchorFriendsWindow(object):
         title = w
 
     def setupUi(self, LiveMatchorFriendsWindow):
+        global window
+        window = LiveMatchorFriendsWindow
         LiveMatchorFriendsWindow.setObjectName("LiveMatchorFriendsWindow")
         LiveMatchorFriendsWindow.setFixedSize(800, 600)
         LiveMatchorFriendsWindow.setStyleSheet("background-color: black;")
-        LiveMatchorFriendsWindow.setWindowIcon(QtGui.QIcon("icon.ico"))
+        self.nam = QNetworkAccessManager()
+        self.nam.finished.connect(set_window_icon_from_response)
+        self.nam.get(QNetworkRequest(QUrl("https://raw.githubusercontent.com/"
+                                          "T3tsuo/paladinsLive/main/cache/icon.ico")))
         self.centralwidget = QtWidgets.QWidget(LiveMatchorFriendsWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.label = QtWidgets.QLabel(self.centralwidget)
@@ -90,7 +109,7 @@ class Ui_LiveMatchorFriendsWindow(object):
         # grab Ui of FriendsList
         from FriendsList import Ui_FriendsList
         try:
-            #create window
+            # create window
             self.window = QtWidgets.QMainWindow()
             # grabs ui of friendslist window
             self.ui = Ui_FriendsList(name, dev_auth[0], dev_auth[1], title)
@@ -127,7 +146,6 @@ class Ui_LiveMatchorFriendsWindow(object):
                 traceback.print_exc(file=logfile)
             raise
 
-
     def backWindow(self):
         global logfile, dev_auth, title
         # grab Ui of MainScreen
@@ -154,7 +172,8 @@ class Ui_LiveMatchorFriendsWindow(object):
         LiveMatchorFriendsWindow.setWindowTitle(_translate("LiveMatchorFriendsWindow", "MainWindow"))
         self.label.setText(_translate("LiveMatchorFriendsWindow", "Choose an option"))
         self.label.adjustSize()
-        self.label.setGeometry(QtCore.QRect((LiveMatchorFriendsWindow.width() - self.label.width())//2, 150, 280, 100))
+        self.label.setGeometry(
+            QtCore.QRect((LiveMatchorFriendsWindow.width() - self.label.width()) // 2, 150, 280, 100))
         self.label.adjustSize()
         self.friends_button.setText(_translate("LiveMatchorFriendsWindow", "Friends List"))
         self.livematch_button.setText(_translate("LiveMatchorFriendsWindow", "Live Match"))

@@ -16,12 +16,18 @@ from urllib.request import urlopen
 import os
 import traceback
 from datetime import datetime, date
+
+from PyQt5.QtCore import QUrl
+from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest
+
 import FindRank
 
 dev_auth = [0, ""]  # Developer ID and Auth Key
 
 title = ""
 name = ""
+window = None
 
 friend_list = []
 avatar_url1 = []
@@ -159,6 +165,14 @@ def month_string(x):
     return switcher.get(x, lambda: "Error")
 
 
+def set_window_icon_from_response(http_response):
+    global window
+    pixmap = QPixmap()
+    pixmap.loadFromData(http_response.readAll())
+    icon = QIcon(pixmap)
+    if window is not None:
+        window.setWindowIcon(icon)
+
 class Ui_FriendsList(object):
     def __init__(self, x, y, z, w):
         global name, dev_auth, title
@@ -168,11 +182,16 @@ class Ui_FriendsList(object):
         title = w
 
     def setupUi(self, FriendsList):
+        global window
+        window = FriendsList
         sizeObject = QtWidgets.QDesktopWidget().screenGeometry(-1)
         FriendsList.setObjectName("FriendsList")
         FriendsList.setFixedSize(900, sizeObject.height() - 175)
         FriendsList.setStyleSheet("background-color: black;")
-        FriendsList.setWindowIcon(QtGui.QIcon("icon.ico"))
+        self.nam = QNetworkAccessManager()
+        self.nam.finished.connect(set_window_icon_from_response)
+        self.nam.get(QNetworkRequest(QUrl("https://raw.githubusercontent.com/"
+                                          "T3tsuo/paladinsLive/main/cache/icon.ico")))
         self.centralwidget = QtWidgets.QWidget(FriendsList)
         self.centralwidget.setObjectName("centralwidget")
         self.Players = QtWidgets.QLabel(self.centralwidget)

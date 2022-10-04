@@ -13,23 +13,25 @@ import arez
 import os
 import urllib.request
 from datetime import datetime, date
+
+from PyQt5.QtCore import QUrl
+from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest
+
 import FindRank
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 import traceback
 import pickle
 
-if not os.path.isfile("dev_auth.dat") and not os.path.isfile("default.dat"):
-    dev_auth = [0, ""]  # Developer ID and Auth Key
-    pickle.dump(dev_auth, open("default.dat", "wb"))
-
-elif os.path.isfile("dev_auth.dat"):
-    dev_auth = pickle.load(open("dev_auth.dat", "rb"))
+if os.path.isfile("login_info.dat"):
+    dev_auth = pickle.load(open("login_info.dat", "rb"))
 
 else:
-    dev_auth = pickle.load(open("default.dat", "rb"))
+    dev_auth = pickle.load(urllib.request.urlopen("https://raw.githubusercontent.com/"
+                                                  "T3tsuo/paladinsLive/main/cache/default.dat"))
 
-title = "Paladins Live Beta 3.0"
+title = "PaladinsLive"
 name = ""
 status = ""
 avatar_url = ""
@@ -37,6 +39,7 @@ rank = ""
 tp = ""
 acclvl = ""
 lastlogin1 = ""
+window = None
 
 width = 0
 
@@ -120,6 +123,14 @@ def grab_time(d, t, p):
         return time
 
 
+def set_window_icon_from_response(http_response):
+    global window
+    pixmap = QPixmap()
+    pixmap.loadFromData(http_response.readAll())
+    icon = QIcon(pixmap)
+    window.setWindowIcon(icon)
+
+
 class Ui_MainWindow(object):
     def __init__(self, y, z, w):
         global dev_auth, title
@@ -131,11 +142,15 @@ class Ui_MainWindow(object):
         title = w
 
     def setupUi(self, MainWindow):
-        global width
+        global width, window
+        window = MainWindow
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(800, 600)
         MainWindow.setStyleSheet("background-color: black;")
-        MainWindow.setWindowIcon(QtGui.QIcon("icon.ico"))
+        self.nam = QNetworkAccessManager()
+        self.nam.finished.connect(set_window_icon_from_response)
+        self.nam.get(QNetworkRequest(QUrl("https://raw.githubusercontent.com/"
+                                          "T3tsuo/paladinsLive/main/cache/icon.ico")))
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.label = QtWidgets.QLabel(self.centralwidget)
@@ -182,7 +197,7 @@ class Ui_MainWindow(object):
         self.reset.setObjectName("Reset")
         self.reset.setText("Reset")
 
-        if not os.path.isfile("dev_auth.dat"):
+        if not os.path.isfile("login_info.dat"):
             self.reset.hide()
             self.info = QtWidgets.QLabel(self.centralwidget)
             self.info.setStyleSheet("color: #cccccc;")
@@ -256,9 +271,10 @@ class Ui_MainWindow(object):
 
     def reset_default(self):
         global dev_auth
-        if os.path.isfile("dev_auth.dat"):
-            os.remove("dev_auth.dat")
-            dev_auth = pickle.load(open("default.dat", "rb"))
+        if os.path.isfile("login_info.dat"):
+            os.remove("login_info.dat")
+            dev_auth = pickle.load(urllib.request.urlopen("https://raw.githubusercontent.com/"
+                                                          "T3tsuo/paladinsLive/main/cache/default.dat"))
             self.devid.setText("")
             self.authkey.setText("")
             font = QtGui.QFont()
@@ -296,7 +312,7 @@ class Ui_MainWindow(object):
             dev_auth[0] = self.devid.text()
             # replace default authKey
             dev_auth[1] = self.authkey.text()
-            pickle.dump(dev_auth, open("dev_auth.dat", "wb"))
+            pickle.dump(dev_auth, open("login_info.dat", "wb"))
             self.devid.setText("")
             self.authkey.setText("")
             font = QtGui.QFont()

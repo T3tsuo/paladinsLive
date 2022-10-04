@@ -12,6 +12,7 @@ import asyncio
 import arez
 import os
 import urllib.request
+import ssl
 from datetime import datetime, date
 
 from PyQt5.QtCore import QUrl
@@ -24,12 +25,16 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import traceback
 import pickle
 
+ctx = ssl.create_default_context()
+ctx.check_hostname = False
+ctx.verify_mode = ssl.CERT_NONE
+
 if os.path.isfile("login_info.dat"):
     dev_auth = pickle.load(open("login_info.dat", "rb"))
 
 else:
     dev_auth = pickle.load(urllib.request.urlopen("https://raw.githubusercontent.com/"
-                                                  "T3tsuo/paladinsLive/main/cache/default.dat"))
+                                                  "T3tsuo/paladinsLive/main/cache/default.dat", context=ctx))
 
 title = "PaladinsLive"
 name = ""
@@ -274,7 +279,7 @@ class Ui_MainWindow(object):
         if os.path.isfile("login_info.dat"):
             os.remove("login_info.dat")
             dev_auth = pickle.load(urllib.request.urlopen("https://raw.githubusercontent.com/"
-                                                          "T3tsuo/paladinsLive/main/cache/default.dat"))
+                                                          "T3tsuo/paladinsLive/main/cache/default.dat", context=ctx))
             self.devid.setText("")
             self.authkey.setText("")
             font = QtGui.QFont()
@@ -364,7 +369,7 @@ class Ui_MainWindow(object):
             self.label.adjustSize()
             try:
                 image = QtGui.QImage()
-                image.loadFromData(urllib.request.urlopen(avatar_url).read())
+                image.loadFromData(urllib.request.urlopen(avatar_url, context=ctx).read())
                 self.avatar.show()
                 self.avatar.setGeometry(QtCore.QRect(0, 0, 70, 70))
                 self.avatar.setPixmap(QtGui.QPixmap(image))
@@ -388,7 +393,7 @@ class Ui_MainWindow(object):
                 # find the icon url by running a simple function in the FindRank.py file
                 url = FindRank.url(rank)
                 image = QtGui.QImage()
-                image.loadFromData(urllib.request.urlopen(url).read())
+                image.loadFromData(urllib.request.urlopen(url, context=ctx).read())
                 self.rank.show()
                 self.rank.setGeometry(QtCore.QRect(self.label.x() + self.label.width() + 5, self.label.y() - 5, 70, 70))
                 self.rank.setObjectName("rank1")
@@ -402,7 +407,7 @@ class Ui_MainWindow(object):
                 # find the icon url by running a simple function in the FindRank.py file
                 url = FindRank.url(rank)
                 image = QtGui.QImage()
-                image.loadFromData(urllib.request.urlopen(url).read())
+                image.loadFromData(urllib.request.urlopen(url, context=ctx).read())
                 self.rank.show()
                 self.rank.setGeometry(QtCore.QRect(self.label.x() + self.label.width() + 5, self.label.y() - 5, 70, 70))
                 self.rank.setObjectName("rank1")

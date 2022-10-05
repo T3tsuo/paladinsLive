@@ -29,6 +29,8 @@ ctx = ssl.create_default_context()
 ctx.check_hostname = False
 ctx.verify_mode = ssl.CERT_NONE
 
+os.environ['REQUESTS_CA_BUNDLE'] = "certifi/cacert.pem"
+
 if os.path.isfile("login_info.dat"):
     dev_auth = pickle.load(open("login_info.dat", "rb"))
 

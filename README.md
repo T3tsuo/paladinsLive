@@ -1,7 +1,7 @@
 # paladinsLive
 
 ## Description:
-Application to view Live Paladins Match Statistics (Meant for Siege and rank) on both teams.
+Application to view Live Paladins Match Statistics (meant for Siege and rank) on both teams.
 
 ## Demo:
 Default screen when opening the app:

@@ -265,7 +265,6 @@ class Ui_MainWindow(object):
         self.username.returnPressed.connect(self.processUsername)
         self.devid.returnPressed.connect(self.processUsername)
         self.authkey.returnPressed.connect(self.processUsername)
-        self.proceed.clicked.connect(MainWindow.close)
         self.reset.clicked.connect(self.reset_default)
 
         self.retranslateUi(MainWindow)
@@ -447,16 +446,17 @@ class Ui_MainWindow(object):
             self.proceed.setText("Continue?")
             # connect to openWindow
             self.proceed.clicked.connect(self.openWindow)
+            self.proceed.clicked.connect(MainWindow.close)
 
     def openWindow(self):
         global name, dev_auth, logfile, title
         # import next window class Ui
-        from LiveorFriends import Ui_LiveMatchorFriendsWindow
+        from LiveMatch import Ui_LiveMatchWindow
         try:
             # create window
             self.window = QtWidgets.QMainWindow()
             # grabs ui of second window
-            self.ui = Ui_LiveMatchorFriendsWindow(name, dev_auth[0], dev_auth[1], title)
+            self.ui = Ui_LiveMatchWindow(name, dev_auth[0], dev_auth[1], title)
             # sets up the second ui in the new window
             self.ui.setupUi(self.window)
             # set title

@@ -846,12 +846,12 @@ class Ui_LiveMatchWindow(object):
         # reset all match data
         self.reset_data()
         # import ui of previous window
-        from LiveorFriends import Ui_LiveMatchorFriendsWindow
+        from MainScreen import Ui_MainWindow
         try:
             # create window
             self.window = QtWidgets.QMainWindow()
             # grabs ui of second window
-            self.ui = Ui_LiveMatchorFriendsWindow(name, dev_auth[0], dev_auth[1], title)
+            self.ui = Ui_MainWindow(name, dev_auth[0], dev_auth[1])
             # sets up the second ui in the new window
             self.ui.setupUi(self.window)
             # set title

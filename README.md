@@ -12,10 +12,6 @@ Screen after entering players' IGN:
 
 <img src="demo_img/MainScreen_player.png" alt="MainScreen_player" width="700"/>
 
-Options screen when pressing the continue button:
-
-<img src="demo_img/Options.png" alt="Options" width="700"/>
-
 LiveMatch statistic screen:
 
 <img src="demo_img/LiveGame_stats.png" alt="LiveGame_stats" width="700"/>
@@ -23,10 +19,6 @@ LiveMatch statistic screen:
 LiveMatch prediction (for casual siege and rank only):
 
 <img src="demo_img/LiveGame_prediction.png" alt="LiveGame_prediction" width="700"/>
-
-FriendsList Screen:
-
-<img src="demo_img/Friendslist.png" alt="Friendslist" width="700"/>
 
 ## Developer ID and Authentication Key:
 Hi-Rez allows us users to access their database by giving us a Developer ID's and a Authentication Keys, but with that we have limited requests we can make before we can no longer use the database for a certain time period.
@@ -59,10 +51,6 @@ http://status.hirezstudios.com/
 Type in a player's username and make sure to hit enter for the program to check if the name is valid (usernames are not case sensitive). Then press the
 "Continue" button. If the player is currently in a match then hit the "Live
 Match" button for the program to attempt to view both teams player stats of the current match.
-
-### FriendsList:
-It will load your friendslist. It show you their current avatar, name, status, rank, last login and creation date of their account.  
-WARNING: the more friends you have the longer it will take to load the friendslist. (50 friends is a good amount, this is due to the API running slowly)
 
 ### Shortcuts:
 Right now there are two keyboard shortcuts that can be used to make the navigation of the program more friendly. There is the "Esc" button that will go back instead

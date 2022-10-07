@@ -41,9 +41,9 @@ rank = ""
 tp = ""
 acclvl = ""
 lastlogin1 = ""
-window = None
-
 width = 0
+
+window = None
 
 
 async def main(n):
@@ -266,6 +266,7 @@ class Ui_MainWindow(object):
         self.devid.returnPressed.connect(self.processUsername)
         self.authkey.returnPressed.connect(self.processUsername)
         self.reset.clicked.connect(self.reset_default)
+        self.proceed.clicked.connect(MainWindow.close)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -446,7 +447,6 @@ class Ui_MainWindow(object):
             self.proceed.setText("Continue?")
             # connect to openWindow
             self.proceed.clicked.connect(self.openWindow)
-            self.proceed.clicked.connect(MainWindow.close)
 
     def openWindow(self):
         global name, dev_auth, logfile, title
@@ -461,6 +461,8 @@ class Ui_MainWindow(object):
             self.ui.setupUi(self.window)
             # set title
             self.window.setWindowTitle(title)
+            # reset data
+            self.reset_data()
             # display new window
             self.window.show()
         except Exception:
@@ -468,6 +470,18 @@ class Ui_MainWindow(object):
             with open(f"C:\\Users\\{username}\\Desktop\\PaladinsLiveBeta-Error.log", "a") as logfile:
                 traceback.print_exc(file=logfile)
             raise
+
+    def reset_data(self):
+        global title, name, status, avatar_url, rank, tp, acclvl, lastlogin1, width
+        title = "PaladinsLive"
+        name = ""
+        status = ""
+        avatar_url = ""
+        rank = ""
+        tp = ""
+        acclvl = ""
+        lastlogin1 = ""
+        width = 0
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate

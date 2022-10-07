@@ -851,7 +851,7 @@ class Ui_LiveMatchWindow(object):
             # create window
             self.window = QtWidgets.QMainWindow()
             # grabs ui of second window
-            self.ui = Ui_MainWindow(name, dev_auth[0], dev_auth[1])
+            self.ui = Ui_MainWindow(dev_auth[0], dev_auth[1], title)
             # sets up the second ui in the new window
             self.ui.setupUi(self.window)
             # set title
@@ -866,7 +866,7 @@ class Ui_LiveMatchWindow(object):
 
 
     def reset_data(self):
-        global name, status, map_name, queue_name, championsurl1, ranks1, kdas1, df1, winrates1, champlvl1, playerlvl1
+        global status, map_name, queue_name, championsurl1, ranks1, kdas1, df1, winrates1, champlvl1, playerlvl1
         global names1, championsurl2, ranks2, kdas2, df2, winrates2, champlvl2, playerlvl2, names2
         global winrates1text, winrates2text, tp1, tp2
         status = ""

@@ -394,8 +394,8 @@ class Ui_LiveMatchWindow(object):
         self.backBtn.clicked.connect(LiveMatchWindow.close)
         self.backBtn.setAutoDefault(True)
 
-        self.refreshBtn.clicked.connect(self.openRefresh)
         self.refreshBtn.clicked.connect(LiveMatchWindow.close)
+        self.refreshBtn.clicked.connect(self.openRefresh)
         self.refreshBtn.setAutoDefault(True)
 
         loop = asyncio.get_event_loop()

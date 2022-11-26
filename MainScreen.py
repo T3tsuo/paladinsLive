@@ -334,10 +334,8 @@ class Ui_MainWindow(object):
             self.reset.show()
         # if name was inputted
         if len(name) != 0:
-            # starts async
-            loop = asyncio.get_event_loop()
-            # pass name to check in the player database
-            isvalid = loop.run_until_complete(main(name))  # run the async loop
+            # pass name to async main function to check in the player database
+            isvalid = asyncio.run(main(name))  # run the async loop
         else:
             # if name doesn't exist return false
             isvalid = False

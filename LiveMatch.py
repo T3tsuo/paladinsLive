@@ -29,7 +29,7 @@ dev_auth = [0, ""]  # Developer ID and Auth Key
 
 
 model_casual = pickle.load(urllib.request.urlopen("https://raw.githubusercontent.com/"
-                                                  "T3tsuo/paladinsLive/main/cache/model_casual"))
+                                                  "T3tsuo/PaladinsModel/main/model_casual"))
 
 match_name = ""
 
@@ -398,9 +398,8 @@ class Ui_LiveMatchWindow(object):
         self.refreshBtn.clicked.connect(self.openRefresh)
         self.refreshBtn.setAutoDefault(True)
 
-        loop = asyncio.get_event_loop()
         # attempted to find user in a live match
-        inMatch = loop.run_until_complete(live_match(name))
+        inMatch = asyncio.run(live_match(name))
 
         # if they're not in a livematch
         if not inMatch:

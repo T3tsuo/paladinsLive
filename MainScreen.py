@@ -165,17 +165,20 @@ class Ui_MainWindow(object):
         self.label.setFont(font)
         self.label.setObjectName("label")
         self.username = QtWidgets.QLineEdit(self.centralwidget)
-        self.username.setStyleSheet("background-color: white;")
+        self.username.setStyleSheet("background-color: white;"
+                                    "color: black;")
         self.username.setGeometry(QtCore.QRect(300, 250, 200, 30))
         self.username.setObjectName("lineEdit")
         self.username.setPlaceholderText("Username")
         self.devid = QtWidgets.QLineEdit(self.centralwidget)
-        self.devid.setStyleSheet("background-color: white;")
+        self.devid.setStyleSheet("background-color: white;"
+                                 "color: black;")
         self.devid.setGeometry(QtCore.QRect(200, 450, 200, 30))
         self.devid.setObjectName("lineEdit")
         self.devid.setPlaceholderText("devid (optional)")
         self.authkey = QtWidgets.QLineEdit(self.centralwidget)
-        self.authkey.setStyleSheet("background-color: white;")
+        self.authkey.setStyleSheet("background-color: white;"
+                                   "color: black;")
         self.authkey.setGeometry(QtCore.QRect(400, 450, 200, 30))
         self.authkey.setObjectName("lineEdit")
         self.authkey.setPlaceholderText("authkey (optional)")

@@ -76,10 +76,6 @@ pure-eval==0.2.2
 pycparser==2.21
 Pygments==2.13.0
 pyparsing==3.0.9
-PyQt5==5.15.7
-PyQt5-Qt5==5.15.2
-PyQt5-sip==12.11.0
-PyQt5-stubs==5.15.6.0
 PyQt6==6.4.0
 PyQt6-Qt6==6.4.1
 PyQt6-sip==13.4.0

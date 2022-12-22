@@ -413,6 +413,7 @@ class Ui_MainWindow(object):
                 self.rank.setObjectName("rank1")
                 self.rank.setPixmap(QtGui.QPixmap(image))
                 self.rank.setScaledContents(True)
+            self.tp.show()
             self.tp.setText("TP: " + str(tp))
             self.tp.setStyleSheet("color: #cccccc;")
             font = QtGui.QFont()

@@ -1,0 +1,1 @@
+openssl x509 -enddate -noout -in cacert.pem

@@ -111,8 +111,16 @@ async def live_match(n):
     team2 = match.team2
     # for each team member
     for i in range(0, len(team1), 1):
-        # get the champion icon
-        championsurl1.append(team1[i].champion.icon_url)
+        # keep on trying to acquire icon
+        while True:
+            try:
+                # get the champion icon
+                championsurl1.append(team1[i].champion.icon_url)
+                # if icon is acquired then break
+                break
+            except AttributeError:
+                # if failed to get icon, keep on trying to acquire the icon
+                pass
         # get the champion mastery
         champlvl1.append(team1[i].mastery_level)
         # get their account level
@@ -176,7 +184,12 @@ async def live_match(n):
             winrates1text.append(team1[i].winrate_text)
     # same thing for team 2 members
     for i in range(0, len(team2), 1):
-        championsurl2.append(team2[i].champion.icon_url)
+        while True:
+            try:
+                championsurl2.append(team2[i].champion.icon_url)
+                break
+            except AttributeError:
+                pass
         champlvl2.append(team2[i].mastery_level)
         playerlvl2.append(team2[i].account_level)
         id = team2[i].player.name

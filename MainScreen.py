@@ -44,6 +44,7 @@ tp = ""
 acclvl = ""
 lastlogin1 = ""
 width = 0
+other_window = False
 
 window = None
 
@@ -136,14 +137,18 @@ def set_window_icon_from_response(http_response):
 
 
 class Ui_MainWindow(object):
-    def __init__(self, y, z, w):
-        global dev_auth, title
+    def __init__(self, x, y, z, w, q):
+        global name, dev_auth, title, other_window
+        # set name
+        name = x
         # set default devId
         dev_auth[0] = y
         # set default authKey
         dev_auth[1] = z
         # set title
         title = w
+        # other window data
+        other_window = q
 
     def setupUi(self, MainWindow):
         global width, window
@@ -303,16 +308,20 @@ class Ui_MainWindow(object):
             self.reset.hide()
 
     def processUsername(self):
-        global name, dev_auth, width, status, avatar_url, lastlogin1, acclvl, rank, tp
+        global name, dev_auth, width, status, avatar_url, lastlogin1, acclvl, rank, tp, other_window
         # disconnect openWindow function everytime while cheking for a new player
         try:
             self.proceed.clicked.disconnect(self.openWindow)
         except TypeError:
             pass
-        # grab username input
-        name = self.username.text()
-        # clear input box text
-        self.username.clear()
+        # if name data was not passed from another window
+        if not other_window:
+            # grab username input
+            name = self.username.text()
+            # clear input box text
+            self.username.clear()
+        # skipped function where it tries to grab name if not from other window, set other window to false again
+        other_window = False
         # if they input their own devId and authKey
         if self.devid.text() != "" and self.authkey.text() != "":
             # replace default devId
@@ -476,7 +485,7 @@ class Ui_MainWindow(object):
             raise
 
     def reset_data(self):
-        global title, name, status, avatar_url, rank, tp, acclvl, lastlogin1, width
+        global title, name, status, avatar_url, rank, tp, acclvl, lastlogin1, width, other_window
         title = "PaladinsLive"
         name = ""
         status = ""
@@ -486,6 +495,7 @@ class Ui_MainWindow(object):
         acclvl = ""
         lastlogin1 = ""
         width = 0
+        other_window = False
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -504,7 +514,7 @@ if __name__ == "__main__":
         try:
             app = QtWidgets.QApplication(sys.argv)
             MainWindow = QtWidgets.QMainWindow()
-            ui = Ui_MainWindow(dev_auth[0], dev_auth[1], title)
+            ui = Ui_MainWindow(name, dev_auth[0], dev_auth[1], title, other_window)
             ui.setupUi(MainWindow)
             MainWindow.setWindowTitle(title)
             MainWindow.show()

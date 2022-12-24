@@ -222,11 +222,7 @@ async def live_match(n):
         # close the api
         await api.close()
         return True
-    except arez.ArezException:
-        status = "Try to Refresh."
-        await api.close()
-        return False
-    except AttributeError:
+    except Exception:
         status = "Try to Refresh."
         await api.close()
         return False

@@ -367,7 +367,6 @@ class Ui_MainWindow(object):
             self.lastlogin.hide()
             # set button text to quit
             self.proceed.setText("Quit?")
-            self.proceed.clicked.connect(MainWindow.close)
         # if name is in the database
         else:
             # let user know it exists

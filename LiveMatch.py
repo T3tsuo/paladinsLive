@@ -817,7 +817,7 @@ class Ui_LiveMatchWindow(object):
                     self.rank.setScaledContents(True)
 
     def openRefresh(self):
-        global dev_auth, logfile, title, MainWindow
+        global dev_auth, logfile, title
         # reset all match data
         self.reset_data()
         # import refresh ui
@@ -825,7 +825,7 @@ class Ui_LiveMatchWindow(object):
             # create window
             self.window = QtWidgets.QMainWindow()
             # grabs ui of second window
-            self.ui = Ui_LiveMatchWindow(name, dev_auth[0], dev_auth[1], title, MainWindow)
+            self.ui = Ui_LiveMatchWindow(name, dev_auth[0], dev_auth[1], title)
             # sets up the second ui in the new window
             self.ui.setupUi(self.window)
             # set title

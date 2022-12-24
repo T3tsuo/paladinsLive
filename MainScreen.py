@@ -44,7 +44,6 @@ tp = ""
 acclvl = ""
 lastlogin1 = ""
 width = 0
-other_window = False
 
 window = None
 
@@ -137,8 +136,8 @@ def set_window_icon_from_response(http_response):
 
 
 class Ui_MainWindow(object):
-    def __init__(self, x, y, z, w, q):
-        global name, dev_auth, title, other_window
+    def __init__(self, x, y, z, w):
+        global name, dev_auth, title
         # set name
         name = x
         # set default devId
@@ -147,8 +146,6 @@ class Ui_MainWindow(object):
         dev_auth[1] = z
         # set title
         title = w
-        # other window data
-        other_window = q
 
     def setupUi(self, MainWindow):
         global width, window
@@ -308,20 +305,11 @@ class Ui_MainWindow(object):
             self.reset.hide()
 
     def processUsername(self):
-        global name, dev_auth, width, status, avatar_url, lastlogin1, acclvl, rank, tp, other_window
-        # disconnect openWindow function everytime while cheking for a new player
-        try:
-            self.proceed.clicked.disconnect(self.openWindow)
-        except TypeError:
-            pass
-        # if name data was not passed from another window
-        if not other_window:
-            # grab username input
-            name = self.username.text()
-            # clear input box text
-            self.username.clear()
-        # skipped function where it tries to grab name if not from other window, set other window to false again
-        other_window = False
+        global name, dev_auth, width, status, avatar_url, lastlogin1, acclvl, rank, tp
+        # grab username input
+        name = self.username.text()
+        # clear input box text
+        self.username.clear()
         # if they input their own devId and authKey
         if self.devid.text() != "" and self.authkey.text() != "":
             # replace default devId
@@ -368,6 +356,15 @@ class Ui_MainWindow(object):
             self.lastlogin.hide()
             # set button text to quit
             self.proceed.setText("Quit?")
+            self.proceed.clicked.connect(MainWindow.close)
+            try:
+                self.proceed.clicked.disconnect(MainWindow.hide)
+            except TypeError:
+                pass
+            try:
+                self.proceed.clicked.disconnect(self.openWindow)
+            except TypeError:
+                pass
         # if name is in the database
         else:
             # let user know it exists
@@ -458,24 +455,28 @@ class Ui_MainWindow(object):
                 self.lastlogin.show()
             # set button to continue to the next window
             self.proceed.setText("Continue?")
+            # disconnect from closing the Main window but hiding instead
+            try:
+                self.proceed.clicked.disconnect(MainWindow.close)
+            except TypeError:
+                pass
+            self.proceed.clicked.connect(MainWindow.hide)
             # connect to openWindow
             self.proceed.clicked.connect(self.openWindow)
 
     def openWindow(self):
-        global name, dev_auth, logfile, title
+        global name, dev_auth, logfile, title, MainWindow
         # import next window class Ui
         from LiveMatch import Ui_LiveMatchWindow
         try:
             # create window
             self.window = QtWidgets.QMainWindow()
             # grabs ui of second window
-            self.ui = Ui_LiveMatchWindow(name, dev_auth[0], dev_auth[1], title)
+            self.ui = Ui_LiveMatchWindow(name, dev_auth[0], dev_auth[1], title, MainWindow)
             # sets up the second ui in the new window
             self.ui.setupUi(self.window)
             # set title
             self.window.setWindowTitle(title)
-            # reset data
-            self.reset_data()
             # display new window
             self.window.show()
         except Exception:
@@ -483,19 +484,6 @@ class Ui_MainWindow(object):
             with open(f"C:\\Users\\{username}\\Desktop\\PaladinsLiveBeta-Error.log", "a") as logfile:
                 traceback.print_exc(file=logfile)
             raise
-
-    def reset_data(self):
-        global title, name, status, avatar_url, rank, tp, acclvl, lastlogin1, width, other_window
-        title = "PaladinsLive"
-        name = ""
-        status = ""
-        avatar_url = ""
-        rank = ""
-        tp = ""
-        acclvl = ""
-        lastlogin1 = ""
-        width = 0
-        other_window = False
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -514,7 +502,7 @@ if __name__ == "__main__":
         try:
             app = QtWidgets.QApplication(sys.argv)
             MainWindow = QtWidgets.QMainWindow()
-            ui = Ui_MainWindow(name, dev_auth[0], dev_auth[1], title, other_window)
+            ui = Ui_MainWindow(name, dev_auth[0], dev_auth[1], title)
             ui.setupUi(MainWindow)
             MainWindow.setWindowTitle(title)
             MainWindow.show()

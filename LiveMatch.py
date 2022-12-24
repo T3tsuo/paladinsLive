@@ -61,6 +61,7 @@ champlvl2 = []
 playerlvl2 = []
 names2 = []
 
+MainWindow = None
 window = None
 
 
@@ -240,8 +241,8 @@ def set_window_icon_from_response(http_response):
 
 
 class Ui_LiveMatchWindow(object):
-    def __init__(self, x, y, z, w):
-        global name, dev_auth, title
+    def __init__(self, x, y, z, w, q):
+        global name, dev_auth, title, MainWindow
         # set the name
         name = x
         # current dev Id
@@ -250,6 +251,8 @@ class Ui_LiveMatchWindow(object):
         dev_auth[1] = z
         # set current title
         title = w
+        # store the main window object
+        MainWindow = q
 
     def setupUi(self, LiveMatchWindow):
         global window
@@ -843,24 +846,13 @@ class Ui_LiveMatchWindow(object):
             raise
 
     def backWindow(self):
-        global name, dev_auth, logfile, title
+        global name, dev_auth, logfile, title, MainWindow
         # reset all match data
         self.reset_data()
         # import ui of previous window
         from MainScreen import Ui_MainWindow
         try:
-            # create window
-            self.window = QtWidgets.QMainWindow()
-            # grabs ui of second window
-            self.ui = Ui_MainWindow(name, dev_auth[0], dev_auth[1], title, True)
-            # sets up the second ui in the new window
-            self.ui.setupUi(self.window)
-            # process player data sent back
-            self.ui.processUsername()
-            # set title
-            self.window.setWindowTitle(title)
-            # display new window
-            self.window.show()
+            MainWindow.show()
         except Exception:
             username = os.getlogin()
             with open(f"C:\\Users\\{username}\\Desktop\\PaladinsLiveBeta-Error.log", "a") as logfile:

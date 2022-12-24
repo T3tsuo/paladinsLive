@@ -68,167 +68,168 @@ window = None
 async def live_match(n):
     global status, map_name, queue_name, match_name
     # while program might break from HTTP Exception
-    while True:
-        try:
-            # create an API instance
-            api = arez.PaladinsAPI(dev_auth[0], dev_auth[1])
-            # fetch Player stats
-            player = await api.get_player(n)
-            # gets player status, and reformat to only display status and not the IGN
-            status = (await player.get_status()).status.name
-            # if the player is not in a match
-            if status != "In Match":
-                # then close api
-                await api.close()
-                # return that it isn't in match
-                return False
-            # if in match then get status
-            status1 = await player.get_status()
-            # and get live match info
-            match = await status1.get_live_match()
-            # get match name
-            try:
-                map_name = match.map_name
-            except AttributeError:
-                status = "(ERROR) could not acquire match data from Paladins API"
-                await api.close()
-                return False
-            # and type of match
-            try:
-                queue_name = match.queue.name
-            except AttributeError:
-                status = "(ERROR) could not acquire match data from Paladins API"
-                await api.close()
-                return False
-            # string together the match name and type
-            match_name = map_name + ": " + queue_name
-            # get live of live players of team1
-            team1 = match.team1
-            # same for team 2
-            team2 = match.team2
-            # for each team member
-            for i in range(0, len(team1), 1):
-                # get the champion icon
-                championsurl1.append(team1[i].champion.icon_url)
-                # get the champion mastery
-                champlvl1.append(team1[i].mastery_level)
-                # get their account level
-                playerlvl1.append(team1[i].account_level)
-                # check if their name exists in the system
-                id = team1[i].player.name
-                # if it does exit
-                if id != "":
-                    # get the player id number
-                    num = team1[i].player.id
-                    # get its full player object
-                    p = await api.get_player(num)
-                    # grab the name with the platform they play on
-                    names1.append(id + ":   " + p.platform.name)
-                    # get their keyboard rank
-                    ranks1.append(p.ranked_keyboard.rank.alt_name)
-                    # get their tp
-                    tp1.append("TP: " + str(p.ranked_keyboard.points))
-                    # get the specific champions' stats they are playing this match
-                    champions_stat = arez.utils.get(await match.team1[i].player.get_champion_stats(),
-                                                    champion__name=match.team1[i].champion.name)
-                    # find the champions kda and add it to the team kda list
-                    try:
-                        kdas1.append(int(champions_stat.kda2 * 100) / 100)
-                    # if it cannot be added
-                    except AttributeError:
-                        # add error message to the kda list
-                        kdas1.append("N/A")
-                    # find the champions df and add it to the team df list
-                    try:
-                        df1.append(champions_stat.df)
-                    # if it cannot be added
-                    except AttributeError:
-                        # add error message to the df list
-                        df1.append("N/A")
-                    # find the champions winrate and add it to the team winrate list
-                    try:
-                        winrates1text.append(champions_stat.winrate_text)
-                        winrates1.append(champions_stat.winrate)
-                    # if it cannot be added
-                    except AttributeError:
-                        # add error message to the df list
-                        winrates1.append("N/A")
-                        winrates1text.append("N/A")
-                else:
-                    # if name doesn't exit add name as an error
-                    names1.append("N/A")
-                    # tp is also an error
-                    tp1.append("ERROR")
-                    # append their "rank"
-                    try:
-                        ranks1.append(team1[i].rank.alt_name)
-                    except Exception:
-                        ranks1.append("Qualifying")
-                    # append error as kda
-                    kdas1.append("N/A")
-                    # same with df
-                    df1.append("N/A")
-                    # same with winrate
-                    winrates1.append(team1[i].winrate)
-                    winrates1text.append(team1[i].winrate_text)
-            # same thing for team 2 members
-            for i in range(0, len(team2), 1):
-                championsurl2.append(team2[i].champion.icon_url)
-                champlvl2.append(team2[i].mastery_level)
-                playerlvl2.append(team2[i].account_level)
-                id = team2[i].player.name
-                if id != "":
-                    num = team2[i].player.id
-                    p = await api.get_player(num)
-                    names2.append(id + ":   " + p.platform.name)
-                    ranks2.append(p.ranked_keyboard.rank.alt_name)
-                    tp2.append("TP: " + str(p.ranked_keyboard.points))
-                    champions_stat = arez.utils.get(await match.team2[i].player.get_champion_stats(),
-                                                    champion__name=match.team2[i].champion.name)
-                    try:
-                        kdas2.append(int(champions_stat.kda2 * 100) / 100)
-                    except AttributeError:
-                        kdas2.append("N/A")
-                    try:
-                        df2.append(champions_stat.df)
-                    except AttributeError:
-                        df2.append("N/A")
-                    try:
-                        winrates2.append(champions_stat.winrate)
-                        winrates2text.append(champions_stat.winrate_text)
-                    except AttributeError:
-                        winrates2.append("N/A")
-                        winrates2text.append("N/A")
-                else:
-                    names2.append("N/A")
-                    tp2.append("ERROR")
-                    try:
-                        ranks2.append(team2[i].rank.alt_name)
-                    except Exception:
-                        ranks2.append("Qualifying")
-                    kdas2.append("N/A")
-                    df2.append("N/A")
-                    winrates2.append(team2[i].winrate)
-                    winrates2text.append(team2[i].winrate_text)
-            # if team members are less than 55
-            if len(team1) < 5:
-                # then for each missing member (bot)
-                for i in range(0, 5 - len(team1), 1):
-                    # append their icon url as bot
-                    championsurl1.append("BOT")
-            if len(team2) < 5:
-                for i in range(0, 5 - len(team2), 1):
-                    # append their icon url as bot
-                    championsurl2.append("BOT")
-            # close the api
+    try:
+        # create an API instance
+        api = arez.PaladinsAPI(dev_auth[0], dev_auth[1])
+        # fetch Player stats
+        player = await api.get_player(n)
+        # gets player status, and reformat to only display status and not the IGN
+        status = (await player.get_status()).status.name
+        # if the player is not in a match
+        if status != "In Match":
+            # then close api
             await api.close()
-            return True
-        except arez.ArezException as e:
-            print(e)
-            pass
-        except AttributeError as e:
-            print(e)
-            pass
+            # return that it isn't in match
+            return False
+        # if in match then get status
+        status1 = await player.get_status()
+        # and get live match info
+        match = await status1.get_live_match()
+        # get match name
+        try:
+            map_name = match.map_name
+        except AttributeError:
+            status = "(ERROR) could not acquire match data from Paladins API"
+            await api.close()
+            return False
+        # and type of match
+        try:
+            queue_name = match.queue.name
+        except AttributeError:
+            status = "(ERROR) could not acquire match data from Paladins API"
+            await api.close()
+            return False
+        # string together the match name and type
+        match_name = map_name + ": " + queue_name
+        # get live of live players of team1
+        team1 = match.team1
+        # same for team 2
+        team2 = match.team2
+        # for each team member
+        for i in range(0, len(team1), 1):
+            # get the champion icon
+            championsurl1.append(team1[i].champion.icon_url)
+            # get the champion mastery
+            champlvl1.append(team1[i].mastery_level)
+            # get their account level
+            playerlvl1.append(team1[i].account_level)
+            # check if their name exists in the system
+            id = team1[i].player.name
+            # if it does exit
+            if id != "":
+                # get the player id number
+                num = team1[i].player.id
+                # get its full player object
+                p = await api.get_player(num)
+                # grab the name with the platform they play on
+                names1.append(id + ":   " + p.platform.name)
+                # get their keyboard rank
+                ranks1.append(p.ranked_keyboard.rank.alt_name)
+                # get their tp
+                tp1.append("TP: " + str(p.ranked_keyboard.points))
+                # get the specific champions' stats they are playing this match
+                champions_stat = arez.utils.get(await match.team1[i].player.get_champion_stats(),
+                                                champion__name=match.team1[i].champion.name)
+                # find the champions kda and add it to the team kda list
+                try:
+                    kdas1.append(int(champions_stat.kda2 * 100) / 100)
+                # if it cannot be added
+                except AttributeError:
+                    # add error message to the kda list
+                    kdas1.append("N/A")
+                # find the champions df and add it to the team df list
+                try:
+                    df1.append(champions_stat.df)
+                # if it cannot be added
+                except AttributeError:
+                    # add error message to the df list
+                    df1.append("N/A")
+                # find the champions winrate and add it to the team winrate list
+                try:
+                    winrates1text.append(champions_stat.winrate_text)
+                    winrates1.append(champions_stat.winrate)
+                # if it cannot be added
+                except AttributeError:
+                    # add error message to the df list
+                    winrates1.append("N/A")
+                    winrates1text.append("N/A")
+            else:
+                # if name doesn't exit add name as an error
+                names1.append("N/A")
+                # tp is also an error
+                tp1.append("ERROR")
+                # append their "rank"
+                try:
+                    ranks1.append(team1[i].rank.alt_name)
+                except Exception:
+                    ranks1.append("Qualifying")
+                # append error as kda
+                kdas1.append("N/A")
+                # same with df
+                df1.append("N/A")
+                # same with winrate
+                winrates1.append(team1[i].winrate)
+                winrates1text.append(team1[i].winrate_text)
+        # same thing for team 2 members
+        for i in range(0, len(team2), 1):
+            championsurl2.append(team2[i].champion.icon_url)
+            champlvl2.append(team2[i].mastery_level)
+            playerlvl2.append(team2[i].account_level)
+            id = team2[i].player.name
+            if id != "":
+                num = team2[i].player.id
+                p = await api.get_player(num)
+                names2.append(id + ":   " + p.platform.name)
+                ranks2.append(p.ranked_keyboard.rank.alt_name)
+                tp2.append("TP: " + str(p.ranked_keyboard.points))
+                champions_stat = arez.utils.get(await match.team2[i].player.get_champion_stats(),
+                                                champion__name=match.team2[i].champion.name)
+                try:
+                    kdas2.append(int(champions_stat.kda2 * 100) / 100)
+                except AttributeError:
+                    kdas2.append("N/A")
+                try:
+                    df2.append(champions_stat.df)
+                except AttributeError:
+                    df2.append("N/A")
+                try:
+                    winrates2.append(champions_stat.winrate)
+                    winrates2text.append(champions_stat.winrate_text)
+                except AttributeError:
+                    winrates2.append("N/A")
+                    winrates2text.append("N/A")
+            else:
+                names2.append("N/A")
+                tp2.append("ERROR")
+                try:
+                    ranks2.append(team2[i].rank.alt_name)
+                except Exception:
+                    ranks2.append("Qualifying")
+                kdas2.append("N/A")
+                df2.append("N/A")
+                winrates2.append(team2[i].winrate)
+                winrates2text.append(team2[i].winrate_text)
+        # if team members are less than 55
+        if len(team1) < 5:
+            # then for each missing member (bot)
+            for i in range(0, 5 - len(team1), 1):
+                # append their icon url as bot
+                championsurl1.append("BOT")
+        if len(team2) < 5:
+            for i in range(0, 5 - len(team2), 1):
+                # append their icon url as bot
+                championsurl2.append("BOT")
+        # close the api
+        await api.close()
+        return True
+    except arez.ArezException:
+        status = "Try to Refresh."
+        await api.close()
+        return False
+    except AttributeError:
+        status = "Try to Refresh."
+        await api.close()
+        return False
 
 
 def set_window_icon_from_response(http_response):
@@ -823,7 +824,7 @@ class Ui_LiveMatchWindow(object):
                     self.rank.setScaledContents(True)
 
     def openRefresh(self):
-        global dev_auth, logfile, title
+        global dev_auth, logfile, title, MainWindow
         # reset all match data
         self.reset_data()
         # import refresh ui
@@ -831,14 +832,14 @@ class Ui_LiveMatchWindow(object):
             # create window
             self.window = QtWidgets.QMainWindow()
             # grabs ui of second window
-            self.ui = Ui_LiveMatchWindow(name, dev_auth[0], dev_auth[1], title)
+            self.ui = Ui_LiveMatchWindow(name, dev_auth[0], dev_auth[1], title, MainWindow)
             # sets up the second ui in the new window
             self.ui.setupUi(self.window)
             # set title
             self.window.setWindowTitle(title)
             # display new window
             self.window.show()
-        # if there's a crash write in error log
+        # if there's a crash write-in error log
         except Exception:
             username = os.getlogin()
             with open(f"C:\\Users\\{username}\\Desktop\\PaladinsLiveBeta-Error.log", "a") as logfile:

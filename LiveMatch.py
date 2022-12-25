@@ -221,7 +221,7 @@ async def live_match(n):
         # close the api
         await api.close()
         return True
-    except Exception:
+    except:
         status = "Try to Refresh."
         await api.close()
         return False

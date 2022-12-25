@@ -320,7 +320,8 @@ class Ui_MainWindow(object):
             # clear input box text
             self.username.clear()
         # skipped function where it tries to grab name if not from other window, set other window to false again
-        other_window = False
+        else:
+            other_window = False
         # if they input their own devId and authKey
         if self.devid.text() != "" and self.authkey.text() != "":
             # replace default devId
@@ -395,8 +396,10 @@ class Ui_MainWindow(object):
             self.avatar.move(self.label.x() - 20 - self.avatar.width(), self.label.y() - 10)
             # rank format in url
             rankSplit = rank.split(" ")
+            # there are two formats for rank icons
             if len(rankSplit) == 2:
                 rank = rankSplit[0] + "_" + rankSplit[1]
+            # try the first string format
             try:
                 # find the icon url by running a simple function in the FindRank.py file
                 url = FindRank.url(rank)
@@ -407,6 +410,7 @@ class Ui_MainWindow(object):
                 self.rank.setObjectName("rank1")
                 self.rank.setPixmap(QtGui.QPixmap(image))
                 self.rank.setScaledContents(True)
+            # if it fails then try the next string format
             except:
                 count = 0
                 for number in rankSplit[1]:

@@ -35,6 +35,11 @@ else:
     dev_auth = pickle.load(urllib.request.urlopen("https://raw.githubusercontent.com/"
                                                   "T3tsuo/paladinsLive/main/cache/default.dat"))
 
+if os.path.isfile("window_position.dat"):
+    window_position = pickle.load(open("window_position.dat", "rb"))
+else:
+    window_position = None
+
 title = "PaladinsLive"
 name = ""
 status = ""
@@ -137,8 +142,8 @@ def set_window_icon_from_response(http_response):
 
 
 class Ui_MainWindow(object):
-    def __init__(self, x, y, z, w, q):
-        global name, dev_auth, title, other_window
+    def __init__(self, x, y, z, w, q, a, l):
+        global name, dev_auth, title, other_window, app, window_position
         # set name
         name = x
         # set default devId
@@ -148,13 +153,17 @@ class Ui_MainWindow(object):
         # set title
         title = w
         other_window = q
+        app = a
+        window_position = l
 
     def setupUi(self, MainWindow):
-        global width, window
+        global width, window, window_position, app
         window = MainWindow
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(800, 600)
         MainWindow.setStyleSheet("background-color: black;")
+        if window_position is not None:
+            MainWindow.move(window_position)
         self.nam = QNetworkAccessManager()
         self.nam.finished.connect(set_window_icon_from_response)
         self.nam.get(QNetworkRequest(QUrl("https://raw.githubusercontent.com/"
@@ -276,6 +285,8 @@ class Ui_MainWindow(object):
         self.authkey.returnPressed.connect(self.processUsername)
         self.reset.clicked.connect(self.reset_default)
         self.proceed.clicked.connect(MainWindow.close)
+
+        app.aboutToQuit.connect(closeEvent)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -465,14 +476,14 @@ class Ui_MainWindow(object):
             self.proceed.clicked.connect(self.openWindow)
 
     def openWindow(self):
-        global name, dev_auth, logfile, title
+        global name, dev_auth, logfile, title, app, window_position
         # import next window class Ui
         from LiveMatch import Ui_LiveMatchWindow
         try:
             # create window
             self.window = QtWidgets.QMainWindow()
             # grabs ui of second window
-            self.ui = Ui_LiveMatchWindow(name, dev_auth[0], dev_auth[1], title)
+            self.ui = Ui_LiveMatchWindow(name, dev_auth[0], dev_auth[1], title, app, window_position)
             # sets up the second ui in the new window
             self.ui.setupUi(self.window)
             # set title
@@ -510,6 +521,11 @@ class Ui_MainWindow(object):
         self.proceed.setText(_translate("MainWindow", "Quit?"))
 
 
+def closeEvent():
+    global window
+    pickle.dump(window.pos(), open("window_position.dat", "wb"))
+
+
 if __name__ == "__main__":
     import sys
 
@@ -517,7 +533,7 @@ if __name__ == "__main__":
         try:
             app = QtWidgets.QApplication(sys.argv)
             MainWindow = QtWidgets.QMainWindow()
-            ui = Ui_MainWindow(name, dev_auth[0], dev_auth[1], title, other_window)
+            ui = Ui_MainWindow(name, dev_auth[0], dev_auth[1], title, other_window, app, window_position)
             ui.setupUi(MainWindow)
             MainWindow.setWindowTitle(title)
             MainWindow.show()

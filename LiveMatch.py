@@ -62,6 +62,8 @@ playerlvl2 = []
 names2 = []
 
 window = None
+window_position = None
+app = None
 
 
 async def live_match(n):
@@ -237,8 +239,8 @@ def set_window_icon_from_response(http_response):
 
 
 class Ui_LiveMatchWindow(object):
-    def __init__(self, x, y, z, w):
-        global name, dev_auth, title
+    def __init__(self, x, y, z, w, q, l):
+        global name, dev_auth, title, app, window_position
         # set the name
         name = x
         # current dev Id
@@ -247,13 +249,17 @@ class Ui_LiveMatchWindow(object):
         dev_auth[1] = z
         # set current title
         title = w
+        app = q
+        window_position = l
 
     def setupUi(self, LiveMatchWindow):
-        global window
+        global window, window_position, app
         window = LiveMatchWindow
         LiveMatchWindow.setObjectName("LiveMatchWindow")
         LiveMatchWindow.setFixedSize(1240, 720)
         LiveMatchWindow.setStyleSheet("background-color: black;")
+        if window_position is not None:
+            LiveMatchWindow.move(window_position)
         self.nam = QNetworkAccessManager()
         self.nam.finished.connect(set_window_icon_from_response)
         self.nam.get(QNetworkRequest(QUrl("https://raw.githubusercontent.com/"
@@ -397,6 +403,8 @@ class Ui_LiveMatchWindow(object):
         self.refreshBtn.clicked.connect(LiveMatchWindow.close)
         self.refreshBtn.clicked.connect(self.openRefresh)
         self.refreshBtn.setAutoDefault(True)
+
+        app.aboutToQuit.connect(closeEvent)
 
         # attempted to find user in a live match
         inMatch = asyncio.run(live_match(name))
@@ -817,7 +825,7 @@ class Ui_LiveMatchWindow(object):
                     self.rank.setScaledContents(True)
 
     def openRefresh(self):
-        global dev_auth, logfile, title
+        global dev_auth, logfile, title, app, window_position
         # reset all match data
         self.reset_data()
         # import refresh ui
@@ -825,7 +833,7 @@ class Ui_LiveMatchWindow(object):
             # create window
             self.window = QtWidgets.QMainWindow()
             # grabs ui of second window
-            self.ui = Ui_LiveMatchWindow(name, dev_auth[0], dev_auth[1], title)
+            self.ui = Ui_LiveMatchWindow(name, dev_auth[0], dev_auth[1], title, app, window_position)
             # sets up the second ui in the new window
             self.ui.setupUi(self.window)
             # set title
@@ -840,7 +848,7 @@ class Ui_LiveMatchWindow(object):
             raise
 
     def backWindow(self):
-        global name, dev_auth, logfile, title
+        global name, dev_auth, logfile, title, app, window_position
         # reset all match data
         self.reset_data()
         # import ui of previous window
@@ -849,7 +857,7 @@ class Ui_LiveMatchWindow(object):
             # create window
             self.window = QtWidgets.QMainWindow()
             # grabs ui of second window
-            self.ui = Ui_MainWindow(name, dev_auth[0], dev_auth[1], title, True)
+            self.ui = Ui_MainWindow(name, dev_auth[0], dev_auth[1], title, True, app, window_position)
             # sets up the second ui in the new window
             self.ui.setupUi(self.window)
             # process player data sent back
@@ -918,3 +926,8 @@ class Ui_LiveMatchWindow(object):
         self.Ranks1.adjustSize()
         self.Ranks2.setText(_translate("LiveMatchWindow", "Rank:"))
         self.Ranks1.adjustSize()
+
+
+def closeEvent():
+    global window
+    pickle.dump(window.pos(), open("window_position.dat", "wb"))

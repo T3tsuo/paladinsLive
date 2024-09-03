@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import urllib.parse
 
 
 def rank_url(rank_name):
@@ -26,7 +27,9 @@ def rank_url(rank_name):
 
 
 def champion_url(champion_name):
-    champion_name = champion_name.replace(" ", "")
+    # change special characters to work with url
+    champion_name = urllib.parse.quote(champion_name.replace(" ", ""))
+
     page = requests.get("https://paladins.fandom.com/wiki/Category:Champion_icons")
 
     # read html

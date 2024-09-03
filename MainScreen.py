@@ -21,7 +21,7 @@ from PyQt6.QtGui import QPixmap, QIcon
 from PyQt6.QtNetwork import QNetworkAccessManager, QNetworkRequest
 from PyQt6 import QtCore, QtGui, QtWidgets
 
-import FindRank
+import FindImage
 
 import traceback
 import pickle
@@ -412,8 +412,8 @@ class Ui_MainWindow(object):
                 rank = rankSplit[0] + "_" + rankSplit[1]
             # try the first string format
             try:
-                # find the icon url by running a simple function in the FindRank.py file
-                url = FindRank.url(rank)
+                # find the icon url by running a simple function in the FindImage.py file
+                url = FindImage.rank_url(rank)
                 image = QtGui.QImage()
                 image.loadFromData(urllib.request.urlopen(url).read())
                 self.rank.show()
@@ -427,8 +427,8 @@ class Ui_MainWindow(object):
                 for number in rankSplit[1]:
                     count += int(number)
                 rank = rankSplit[0] + "_" + str(count)
-                # find the icon url by running a simple function in the FindRank.py file
-                url = FindRank.url(rank)
+                # find the icon url by running a simple function in the FindImage.py file
+                url = FindImage.rank_url(rank)
                 image = QtGui.QImage()
                 image.loadFromData(urllib.request.urlopen(url).read())
                 self.rank.show()

@@ -24,7 +24,7 @@ from PyQt6.QtGui import QPixmap, QIcon
 from PyQt6.QtNetwork import QNetworkAccessManager, QNetworkRequest
 from PyQt6 import QtCore, QtGui, QtWidgets
 
-import FindRank
+import FindImage
 
 dev_auth = [0, ""]  # Developer ID and Auth Key
 
@@ -109,7 +109,7 @@ async def live_match(n):
         # for each team member
         for i in range(0, len(team1), 1):
             # get the champion icon
-            championsurl1.append(team1[i].champion.icon_url)
+            championsurl1.append(FindImage.champion_url(team1[i].champion.name))
             # get the champion mastery
             champlvl1.append(team1[i].mastery_level)
             # get their account level
@@ -173,7 +173,8 @@ async def live_match(n):
                 winrates1text.append(team1[i].winrate_text)
         # same thing for team 2 members
         for i in range(0, len(team2), 1):
-            championsurl2.append(team2[i].champion.icon_url)
+            # get the champion icon
+            championsurl2.append(FindImage.champion_url(team2[i].champion.name))
             champlvl2.append(team2[i].mastery_level)
             playerlvl2.append(team2[i].account_level)
             id = team2[i].player.name
@@ -751,7 +752,7 @@ class Ui_LiveMatchWindow(object):
                     rank = ranks1[i]
                 try:
                     # find the icon url
-                    url = FindRank.url(rank)
+                    url = FindImage.rank_url(rank)
                     image = QtGui.QImage()
                     image.loadFromData(urlopen(url).read())
                     self.rank = QtWidgets.QLabel(self.frame)
@@ -765,7 +766,7 @@ class Ui_LiveMatchWindow(object):
                         count += int(number)
                     rank = rankSplit[0] + "_" + str(count)
                     # find the icon url
-                    url = FindRank.url(rank)
+                    url = FindImage.rank_url(rank)
                     image = QtGui.QImage()
                     image.loadFromData(urlopen(url).read())
                     self.rank = QtWidgets.QLabel(self.frame)
@@ -801,7 +802,7 @@ class Ui_LiveMatchWindow(object):
                     rank = ranks2[i]
                 try:
                     # find the icon url
-                    url = FindRank.url(rank)
+                    url = FindImage.rank_url(rank)
                     image = QtGui.QImage()
                     image.loadFromData(urlopen(url).read())
                     self.rank = QtWidgets.QLabel(self.frame)
@@ -815,7 +816,7 @@ class Ui_LiveMatchWindow(object):
                         count += int(number)
                     rank = rankSplit[0] + "_" + str(count)
                     # find the icon url
-                    url = FindRank.url(rank)
+                    url = FindImage.rank_url(rank)
                     image = QtGui.QImage()
                     image.loadFromData(urlopen(url).read())
                     self.rank = QtWidgets.QLabel(self.frame)

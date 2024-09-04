@@ -38,13 +38,13 @@ def champion_url(champion_name):
     # for every a tag (href) with the cla
     for a in soup.findAll('a', class_="image", href=True):
         # if the champions name is in the tag
-        if champion_name in str(a):
+        if champion_name.casefold() in str(a).casefold() and "Champion" in str(a):
             # then isolate the url by quotations
             urlFind = str(a).split('"')
             # now the isolated url is in a list of chunks from the tag
             for string in urlFind:
                 # if the chunk of the tag contains the rank name
-                if champion_name in string:
+                if champion_name.casefold() in string.casefold() and "Champion" in str(a):
                     # then that is the icon url for the players rank
                     return string
     else:
